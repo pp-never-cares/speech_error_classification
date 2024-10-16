@@ -20,7 +20,7 @@ data/whipserX/*.csv
 data/whisperX_word/*.json
 
 # logs
-logs/
+logs/*
 !logs/.gitkeep
 
 # Byte-compiled / optimized / DLL files
