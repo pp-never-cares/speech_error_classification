@@ -185,7 +185,8 @@ def process_split(
         seed
     )
 
-    output_file = os.path.join(output_dir, f"{split_name}_contrive.csv")
+    output_file = os.path.join(
+        output_dir, f"{split_name}_contrive_{ratio:.2f}.csv")
     write_csv(headers, contrived_set, output_file)
 
     print(f"Contrived {split_name} set saved to {output_file}. "

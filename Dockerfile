@@ -10,8 +10,8 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 
 # Copy the specific directories and files into the container
-COPY scripts /app/scripts
 COPY src /app/src
+COPY scripts /app/scripts
 
 # Start an interactive terminal
 CMD ["bash"]
