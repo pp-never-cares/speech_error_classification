@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
         return features, labels
 
-    test_csv = "data/metadata/test.csv"
+    test_csv = "data/metadata/train.csv"
 
     # Load data once
     print(f"Loading test data from {test_csv}...")
