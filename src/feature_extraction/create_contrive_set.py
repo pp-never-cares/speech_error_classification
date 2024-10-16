@@ -122,7 +122,7 @@ def create_contrived_set(
         List[List[str]]: Contrived dataset rows.
     """
     event_count = len(event_samples)
-    if ratio <= 0 or ratio >= 1:
+    if ratio <= 0 or ratio > 1:
         raise ValueError("Ratio must be between 0 and 1 (exclusive).")
 
     # Calculate the number of non-event samples needed
