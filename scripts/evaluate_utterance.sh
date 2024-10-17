@@ -18,7 +18,7 @@ FEATURE_CONFIG=src/feature_extraction/feature.cfg
 
 MODEL_FILENAME=$(basename "$MODEL_PATH")
 MODEL_BASENAME="${MODEL_FILENAME%.*}"
-OUTPUT_ANNOTATED_TRANSCRIPT="predictions/transcript_${MODEL_BASENAME}"
+OUTPUT_ANNOTATED_TRANSCRIPT="predictions/${MODEL_BASENAME}"
 
 # Verify that the model file exists
 if [ ! -f "$MODEL_PATH" ]; then

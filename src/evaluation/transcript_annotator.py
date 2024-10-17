@@ -261,7 +261,7 @@ class TranscriptAnnotator:
         }
 
         output_file = os.path.join(
-            output_path, f"{self.audio_base_name}_with_errors.json")
+            output_path, f"{self.audio_base_name}_transcripts.json")
 
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(result, f, indent=2)

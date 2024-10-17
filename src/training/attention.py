@@ -11,6 +11,14 @@ from tensorflow.keras.layers import Layer
 class Attention(Layer):
     """
     Custom Keras layer to compute the context vector using the attention mechanism.
+
+    Attributes:
+    - supports_masking: Boolean indicating whether the layer supports masking.
+
+    Methods:
+    - __init__: Initializes the layer.
+    - call: Defines the computation that will be performed on the input data.
+    - compute_mask: Computes the output mask tensor.
     """
 
     def __init__(self, **kwargs):

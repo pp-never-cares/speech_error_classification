@@ -4,7 +4,6 @@ custom_data_generator.py
 Custom data generator for training models with optional event split.
 """
 
-
 from typing import List, Tuple
 import numpy as np
 import tensorflow as tf
