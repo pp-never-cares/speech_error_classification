@@ -23,6 +23,10 @@ data/whisperX_word/*.json
 logs/*
 !logs/.gitkeep
 
+# predictions
+predictions/*
+!predictions/.gitkeep
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
