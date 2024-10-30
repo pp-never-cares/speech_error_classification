@@ -4,7 +4,6 @@ custom_data_generator.py
 Custom data generator for training models with optional event split.
 """
 
-
 from typing import List, Tuple
 import numpy as np
 import tensorflow as tf
@@ -41,6 +40,7 @@ class CustomDataGenerator(tf.keras.utils.Sequence):
         - batch_size (int): The batch size.
         - maxlen (int): The maximum sequence length.
         - enforce_event_split (bool): Whether to enforce a custom event split (e.g., 50% of each batch contains events).
+        - event_ratio (float): The desired ratio of samples with events in each batch.
         """
         super().__init__(**kwargs)
         self.features = features
@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
         return features, labels
 
-    test_csv = "data/metadata/test.csv"
+    test_csv = "data/metadata/train.csv"
 
     # Load data once
     print(f"Loading test data from {test_csv}...")
