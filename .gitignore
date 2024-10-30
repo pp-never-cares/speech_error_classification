@@ -20,8 +20,12 @@ data/whipserX/*.csv
 data/whisperX_word/*.json
 
 # logs
-data/logs/
-!data/logs/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# predictions
+predictions/*
+!predictions/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
