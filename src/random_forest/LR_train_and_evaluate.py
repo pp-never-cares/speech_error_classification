@@ -1,0 +1,101 @@
+import prepare_data
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
+from sklearn.model_selection import cross_val_score, cross_validate, KFold
+from joblib import dump
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
+
+def evaluate_cross_validation(model, X, y, cv_folds):
+    """
+    Perform cross-validation and print precision, recall, and F1 scores for each fold.
+    """
+    kf = KFold(n_splits=cv_folds, shuffle=True, random_state=42)
+
+    # Perform cross-validation and collect precision, recall, and F1 scores
+    cv_results = cross_validate(
+        model, X, y, cv=kf,
+        scoring=['precision_macro', 'recall_macro', 'f1_macro'],
+        return_train_score=False
+    )
+
+    # Extract and print scores for each fold
+    precision_scores = cv_results['test_precision_macro']
+    recall_scores = cv_results['test_recall_macro']
+    f1_scores = cv_results['test_f1_macro']
+
+    print("Cross-Validation Scores for Each Fold:")
+    for fold, (precision, recall, f1) in enumerate(zip(precision_scores, recall_scores, f1_scores), 1):
+        print(f"Fold {fold}: Precision={precision:.4f}, Recall={recall:.4f}, F1 Score={f1:.4f}")
+
+    # Print average scores
+    print("\nTraining Results --- Average Cross-Validation Scores:")
+    print(
+        f"Precision: {precision_scores.mean():.4f}, Recall: {recall_scores.mean():.4f}, F1 Score: {f1_scores.mean():.4f}")
+
+
+def main():
+    # Calculate target_length from training data
+    target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv",
+                                                         "data/contextual_features")
+    print(f"Using target length of {target_length} based on maximum sequence length in training data.")
+
+    # Load training data
+    X_train, y_train, sample_weights_train, scaler = prepare_data.load_train_data(
+        target_length=target_length,
+        primary_feature_dir="data/contextual_features",
+        secondary_feature_dir="data/resampled_features"
+    )
+
+    # Load evaluation data
+    X_eval, y_eval = prepare_data.load_eval_data(
+        target_length=target_length,
+        primary_feature_dir="data/contextual_features",
+        scaler=scaler
+    )
+
+    # Initialize Logistic Regression model
+    model = LogisticRegression(class_weight='balanced', max_iter=1000)
+
+    # Perform cross-validation and evaluate
+    print("\nRunning Cross-Validation on Logistic Regression Model...")
+    evaluate_cross_validation(model, X_train, y_train, cv_folds=5)
+
+    # Train the model on the entire training set
+    print("\nTraining Logistic Regression on the Evaluation training set(with original ratio)...")
+    model.fit(X_train, y_train, sample_weight=sample_weights_train)
+
+    # Evaluate on the evaluation set using a customizable threshold
+    custom_threshold = 0.5  # You can change this value to your desired threshold
+    print(
+        f"\nEvaluation Results for the Logistic Regression Model with Custom Threshold (Threshold = {custom_threshold}):")
+
+    # Get probabilities for the positive class
+    y_eval_prob = model.predict_proba(X_eval)[:, 1]
+
+    # Apply the custom threshold to classify the samples
+    y_eval_pred_custom = (y_eval_prob >= custom_threshold).astype(int)
+
+    # Print the classification report
+    print(classification_report(y_eval, y_eval_pred_custom))
+
+    # Save the trained model
+    dump(model, 'best_logistic_model.joblib')
+    print("\nModel saved as best_logistic_model.joblib")
+
+    # Generate and plot ROC curve
+    #fpr, tpr, _ = roc_curve(y_eval, y_eval_prob)
+    #roc_auc = auc(fpr, tpr)
+
+    #plt.figure()
+    #plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
+    #plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    #plt.xlabel('False Positive Rate')
+    #plt.ylabel('True Positive Rate')
+    #plt.title('Receiver Operating Characteristic (ROC) Curve')
+    #plt.legend(loc='lower right')
+    #plt.show()
+
+
+if __name__ == "__main__":
+    main()

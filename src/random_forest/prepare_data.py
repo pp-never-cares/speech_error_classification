@@ -88,13 +88,16 @@ def load_data(label_info_path, primary_feature_dir, secondary_feature_dir=None, 
 
 def load_train_data(label_info_path="data/metadata/label_train_resampled.csv", primary_feature_dir="data/contextual_features", 
                     secondary_feature_dir="data/resampled_features", feature_column="contextual_feature_file", 
-                    label_column="class", target_length=None, weight_column="example_weight"):
+                    label_column="class", target_length=None, weight_column="example_weight", scaler=None):
     
     X_train, y_train, sample_weights = load_data(label_info_path, primary_feature_dir, secondary_feature_dir, 
                                                  feature_column, label_column, target_length, weight_column)
     
+    if scaler is None:
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
     # Skip scaling for Random Forest model
-    return X_train, y_train, sample_weights
+    return X_train, y_train, sample_weights, scaler
 
 # def load_eval_data(label_info_path="data/metadata/eval_context.csv", primary_feature_dir="data/contextual_features", 
 #                    secondary_feature_dir=None, feature_column="contextual_feature_file", label_column="class", 
@@ -110,23 +113,25 @@ def load_train_data(label_info_path="data/metadata/label_train_resampled.csv", p
 
 def load_eval_data(label_info_path="data/metadata/eval_context.csv", primary_feature_dir="data/contextual_features", 
                    secondary_feature_dir=None, feature_column="contextual_feature_file", label_column="class", 
-                   target_length=None, weight_column="example_weight"):
+                   target_length=None, weight_column="example_weight", scaler=None):
     X_eval, y_eval, _ = load_data(label_info_path, primary_feature_dir, secondary_feature_dir, 
                                   feature_column, label_column, target_length, weight_column)
     
+    if scaler is not None:
+        X_eval = scaler.transform(X_eval)
     # Skip scaling for Random Forest model
     return X_eval, y_eval
 
 
 def load_test_data(label_info_path="data/metadata/test_context.csv", primary_feature_dir="data/contextual_features", 
                    secondary_feature_dir=None, feature_column="contextual_feature_file", label_column="class", 
-                   target_length=None, weight_column="example_weight"):
+                   target_length=None, weight_column="example_weight", scaler=None):
     X_test, y_test, _ = load_data(label_info_path, primary_feature_dir, secondary_feature_dir, 
                                   feature_column, label_column, target_length, weight_column)
     
     # Use the fitted scaler from training to transform test data
-    # if scaler is not None:
-    #     X_test = scaler.transform(X_test)
+    if scaler is not None:
+        X_test = scaler.transform(X_test)
     
     return X_test, y_test
 

@@ -27,7 +27,7 @@ def main():
     print(f"Using target length of {target_length} based on maximum sequence length in training data.")
 
     # Load training data
-    X_train, y_train, sample_weights_train = prepare_data.load_train_data(
+    X_train, y_train, sample_weights_train, scaler = prepare_data.load_train_data(
         target_length=target_length,
         primary_feature_dir="data/contextual_features",
         secondary_feature_dir="data/resampled_features"
