@@ -24,6 +24,10 @@ project/
 
 `docker build -t speech-error-ml .`
 
+For MacOS user, it should be: 
+
+'docker buildx build --platform linux/amd64 -t macarious/speech-error-ml .'
+
 ## Steps to Upload the Docker Image to Docker Hub
 
 1. Log in to Docker Hub using the following command:
@@ -44,9 +48,13 @@ project/
 
 `module load singularity`
 
+For specific requirement of singularity, choose specific version of singularity:
+
+'module avail singularity'
+
 2. Pull the Docker image from Docker Hub using the following command:
 
-`singularity pull docker://macarious/speech-error-ml`
+`singularity pull speech-error-ml.sif docker://macarious/speech-error-ml`
 
 This pulls the Docker image and converts it to a Singularity image `speech-error-ml_latest.sif`.
 

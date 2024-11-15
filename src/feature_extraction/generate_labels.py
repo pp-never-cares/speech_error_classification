@@ -230,8 +230,11 @@ class LabelEncoder:
                     file_list.append(feature_file)
 
             for feature_file in file_list:
-                feature_start_time, feature_end_time = self.transcripts_dict[feature_file]
-
+                try:
+                    feature_start_time, feature_end_time = self.transcripts_dict[feature_file]
+                except KeyError:
+                    print(f"Transcript not found for {feature_file}")
+                    continue
                 # Check if the label falls entirely within the segment
                 if start_time >= feature_start_time and end_time <= feature_end_time:
                     label_start_time = start_time
