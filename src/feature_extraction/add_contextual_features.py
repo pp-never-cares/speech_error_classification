@@ -101,8 +101,9 @@ def add_contextual_features_and_labels(df, feature_dir, contextual_feature_dir, 
     df['contextual_label_file'] = contextual_labels
     
     # Add 'class' column for binary classification based on 'label_count' (1 for error, 0 for non-error)
-    df['class'] = df['label_count'].apply(lambda x: 1 if x > 0 else 0)
-    
+    # df['class'] = df['label_count'].apply(lambda x: 1 if x > 0 else 0)
+    df['class'] = df['label_list'].apply(lambda x: 1 if "Phonological" in x else 0)
+   
     return df
 
 if __name__ == '__main__':
