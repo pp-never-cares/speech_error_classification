@@ -146,7 +146,7 @@ def main():
     evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
     
     # Save best model
-    dump(best_model, 'best_svm_model.joblib')
+    dump(best_model, 'models/baseline_model/best_svm_model.joblib')
     print(f"\nBest model saved as best_svm_model.joblib with F1 Score: {best_score}")
 
 if __name__ == "__main__":
