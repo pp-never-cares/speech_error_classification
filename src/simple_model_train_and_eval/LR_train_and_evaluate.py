@@ -80,7 +80,7 @@ def main():
     print(classification_report(y_eval, y_eval_pred_custom))
 
     # Save the trained model
-    dump(model, 'best_logistic_model.joblib')
+    dump(model, 'models/baseline_model/best_logistic_model.joblib')
     print("\nModel saved as best_logistic_model.joblib")
 
     # Generate and plot ROC curve

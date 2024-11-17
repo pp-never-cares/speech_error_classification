@@ -62,7 +62,7 @@ def main():
     # Define the parameter grid for Grid Search
    
     # Save the best model
-    dump(baseline_model, 'best_rf_model.joblib')
+    dump(baseline_model, 'models/baseline_model/best_rf_model.joblib')
     print(f"\nBest model saved as best_rf_model.joblib with F1 Score: {f1}")
 
 if __name__ == "__main__":
