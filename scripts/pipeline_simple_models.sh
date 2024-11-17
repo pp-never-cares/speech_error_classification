@@ -107,7 +107,7 @@ python src/feature_extraction/resample_data.py \
 
 
 echo "Training Logistic Regression model"
-python src/random_forest/LR_train_and_evaluate.py \
+python src/simple_model_train_and_eval/LR_train_and_evaluate.py \
     --train_csv_path $RESAMPLED_TRAIN_CSV_PATH \
     --eval_csv_path $EVAL_CSV_PATH \
     --test_csv_path $TEST_CSV_PATH \
@@ -117,7 +117,7 @@ python src/random_forest/LR_train_and_evaluate.py \
     # --output_model_path models/best_logistic_model
 
 echo "Training Support Vector Machine model"
-python src/random_forest/SVM_train_and_evaluate.py \
+python src/simple_model_train_and_eval/SVM_train_and_evaluate.py \
     --train_csv_path $RESAMPLED_TRAIN_CSV_PATH \
     --eval_csv_path $EVAL_CSV_PATH \
     --test_csv_path $TEST_CSV_PATH \
@@ -128,7 +128,7 @@ python src/random_forest/SVM_train_and_evaluate.py \
 
 
 echo "Training Random Forest model"
-python src/random_forest/RF_train_and_evaluate.py \
+python src/simple_model_train_and_eval/RF_train_and_evaluate.py \
     --train_csv_path $RESAMPLED_TRAIN_CSV_PATH \
     --eval_csv_path $EVAL_CSV_PATH \
     --test_csv_path $TEST_CSV_PATH \
