@@ -8,7 +8,7 @@ i.e. sound errors in the speech data.
 
 
 Usage:
-    python split_data.py --label_info_path <label_info_context_path> --output_dir <output_dir> --eval_ratio <eval_ratio> --test_ratio <test_ratio>
+    python split_contextual_data.py --label_info_path <label_info_context_path> --output_dir <output_dir> --eval_ratio <eval_ratio> --test_ratio <test_ratio>
 
     - label_info_path (str): The path to the label_info_context.csv file.
     - output_dir (str): The directory to save the split data.
@@ -16,7 +16,7 @@ Usage:
     - test_ratio (float): The ratio of samples to include in the testing set.
     
 Example:
-    python split_data.py --label_info_path /data/metadata/label_info_context.csv --output_dir /data/metadata --eval_ratio 0.1 --test_ratio 0.1
+    python split_contextual_data.py --label_info_path /data/metadata/label_info_context.csv --output_dir /data/metadata --eval_ratio 0.1 --test_ratio 0.1
 """
 
 import os

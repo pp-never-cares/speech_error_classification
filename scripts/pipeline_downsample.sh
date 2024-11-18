@@ -19,30 +19,30 @@ LABEL_INFO_PATH="$LABEL_INFO_DIR/label_info.csv"
 OUTPUT_DIR=$LABEL_INFO_DIR
 EVAL_RATIO=0.1
 TEST_RATIO=0.1
-# TRAIN_CSV_PATH="$LABEL_INFO_DIR/train.csv"
-# EVAL_CSV_PATH="$LABEL_INFO_DIR/eval.csv"
-# TEST_CSV_PATH="$LABEL_INFO_DIR/test.csv"
+TRAIN_CSV_PATH="$LABEL_INFO_DIR/train.csv"
+EVAL_CSV_PATH="$LABEL_INFO_DIR/eval.csv"
+TEST_CSV_PATH="$LABEL_INFO_DIR/test.csv"
 EPOCHS=50
 BATCH_SIZE=64
-# EXPERIMENT_CONFIG_PATH=experiments/default.cfg
+EXPERIMENT_CONFIG_PATH=experiments/default.cfg
 
 
-#define the resampled data directory
-RESAMPLED_FEATURE_DIR=data/resampled_features
-RESAMPLED_LABEL_DIR=data/resampled_labels
-
+#define the downsampled data directory
+DOWNSAMPLED_FEATURE_DIR=data/downsampled_features
+DOWNSAMPLED_LABEL_DIR=data/downsampled_labels
+DOWNSAMPLED_LABEL_INFO_PATH="$LABEL_INFO_DIR/label_downsampled.csv"
 CONTEXTUAL_FEATURE_DIR=data/contextual_features
 CONTEXTUAL_LABEL_DIR=data/contextual_labels
 LABEL_INFO_CONTEXT_PATH="$LABEL_INFO_DIR/label_info_context.csv"
 WINDOW_SIZE=5
 
-RESAMPLED_TRAIN_CSV_PATH="$LABEL_INFO_DIR/train_context.csv"
-
 # Define simple model train/eval data paths
-# TRAIN_DATA_PATH="data/metadata/label_train_resampled.csv"
-RESAMPLED_TRAIN_PATH="$LABEL_INFO_DIR/label_train_resampled.csv"
-EVAL_DATA_PATH="data/metadata/eval_context.csv"
-TEST_DATA_PATH="data/metadata/test_context.csv"
+TRAIN_DATA_PATH="data/metadata/train_downsampled.csv"
+EVAL_DATA_PATH="data/metadata/eval_downsample.csv"
+TEST_DATA_PATH="data/metadata/test_downsample.csv"
+
+
+
 
 
 
@@ -86,34 +86,32 @@ python src/feature_extraction/add_contextual_features.py \
     --window_size $WINDOW_SIZE
 
 
-
-# Split data into train, eval, and test sets
-echo "Splitting added contextual feature data into train, eval, and test sets"
-python src/feature_extraction/split_contextual_data.py --label_info_path $LABEL_INFO_CONTEXT_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
-
-
-# Resample training data to address class imbalance using the contextual features
-echo "Resampling data for balance"
+# Downsample non-error data to address class imbalance using the contextual features
+echo "Downsampling data for balance"
 if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
     mkdir -p $CONTEXTUAL_FEATURE_DIR
 fi
 if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
     mkdir -p $CONTEXTUAL_LABEL_DIR
 fi
-python src/feature_extraction/resample_data.py \
-    --label_info_path $RESAMPLED_TRAIN_CSV_PATH \
-    --output_path $RESAMPLED_TRAIN_PATH \
+python src/feature_extraction/downsampling.py \
+    --label_info_path $LABEL_INFO_CONTEXT_PATH \
+    --output_path $DOWNSAMPLED_LABEL_INFO_PATH \
     --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
     --label_dir $CONTEXTUAL_LABEL_DIR \
-    --resampled_feature_dir $RESAMPLED_FEATURE_DIR \
-    --resampled_label_dir $RESAMPLED_LABEL_DIR \
-    --downsample_factor 2 \
-    --target_ratio 1
+    --downsampled_feature_dir $DOWNSAMPLED_FEATURE_DIR \
+    --downsampled_label_dir $DOWNSAMPLED_LABEL_DIR \
+
+
+
+# Split data into train, eval, and test sets
+echo "Splitting added contextual feature data into train, eval, and test sets"
+python src/feature_extraction/split_downsample_data.py --label_info_path $DOWNSAMPLED_LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
 
 echo "Training Logistic Regression model"
-python src/Simple_models/LR_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_PATH \
+python src/downsample/LR_train_and_evaluate.py \
+    --train_csv_path $TRAIN_DATA_PATH \
     --eval_csv_path $EVAL_DATA_PATH \
     --test_csv_path $TEST_DATA_PATH \
     # --epochs $EPOCHS \
@@ -122,8 +120,8 @@ python src/Simple_models/LR_train_and_evaluate.py \
     # --output_model_path models/best_logistic_model
 
 echo "Training Support Vector Machine model"
-python src/Simple_models/SVM_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_PATH \
+python src/downsample/SVM_train_and_evaluate.py \
+    --train_csv_path $TRAIN_DATA_PATH \
     --eval_csv_path $EVAL_DATA_PATH \
     --test_csv_path $TEST_DATA_PATH \
     # --epochs $EPOCHS \
@@ -133,9 +131,9 @@ python src/Simple_models/SVM_train_and_evaluate.py \
 
 
 echo "Training Random Forest model"
-python src/Simple_models/RF_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_PATH \
-    --eval_csv_path $EVAL_DATA_PATH\
+python src/downsample/RF_train_and_evaluate.py \
+    --train_csv_path $TRAIN_DATA_PATH \
+    --eval_csv_path $EVAL_DATA_PATH \
     --test_csv_path $TEST_DATA_PATH \
     # --epochs $EPOCHS \
     # --batch_size $BATCH_SIZE \
@@ -145,4 +143,5 @@ python src/Simple_models/RF_train_and_evaluate.py \
 
 
 echo "Pipeline execution completed."
+
 

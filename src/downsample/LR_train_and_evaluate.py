@@ -1,10 +1,11 @@
 import prepare_data
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
-from sklearn.model_selection import cross_val_score, cross_validate, KFold
+from sklearn.model_selection import cross_validate, KFold
 from joblib import dump
-import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
+# import matplotlib.pyplot as plt
+
 
 def evaluate_cross_validation(model, X, y, cv_folds):
     """
@@ -36,21 +37,24 @@ def evaluate_cross_validation(model, X, y, cv_folds):
 
 def main():
     # Calculate target_length from training data
-    target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv",
-                                                         "data/contextual_features")
+    target_length = prepare_data.get_max_sequence_length(
+        label_info_path="data/metadata/label_downsampled.csv",
+        primary_feature_dir="data/downsampled_features"
+    )
     print(f"Using target length of {target_length} based on maximum sequence length in training data.")
 
     # Load training data
     X_train, y_train, sample_weights_train, scaler = prepare_data.load_train_data(
-        target_length=target_length,
-        primary_feature_dir="data/contextual_features",
-        secondary_feature_dir="data/resampled_features"
+        label_info_path="data/metadata/train_downsample.csv",
+        primary_feature_dir="data/downsampled_features",
+        target_length=target_length
     )
 
     # Load evaluation data
     X_eval, y_eval = prepare_data.load_eval_data(
+        label_info_path="data/metadata/eval_downsample.csv",
+        primary_feature_dir="data/downsampled_features",
         target_length=target_length,
-        primary_feature_dir="data/contextual_features",
         scaler=scaler
     )
 
@@ -62,7 +66,7 @@ def main():
     evaluate_cross_validation(model, X_train, y_train, cv_folds=5)
 
     # Train the model on the entire training set
-    print("\nTraining Logistic Regression on the Evaluation training set(with original ratio)...")
+    print("\nTraining Logistic Regression on the training set...")
     model.fit(X_train, y_train, sample_weight=sample_weights_train)
 
     # Evaluate on the evaluation set using a customizable threshold
@@ -84,17 +88,17 @@ def main():
     print("\nModel saved as best_logistic_model.joblib")
 
     # Generate and plot ROC curve
-    #fpr, tpr, _ = roc_curve(y_eval, y_eval_prob)
-    #roc_auc = auc(fpr, tpr)
+    # fpr, tpr, _ = roc_curve(y_eval, y_eval_prob)
+    # roc_auc = auc(fpr, tpr)
 
-    #plt.figure()
-    #plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-    #plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    #plt.xlabel('False Positive Rate')
-    #plt.ylabel('True Positive Rate')
-    #plt.title('Receiver Operating Characteristic (ROC) Curve')
-    #plt.legend(loc='lower right')
-    #plt.show()
+    # plt.figure()
+    # plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
+    # plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    # plt.xlabel('False Positive Rate')
+    # plt.ylabel('True Positive Rate')
+    # plt.title('Receiver Operating Characteristic (ROC) Curve')
+    # plt.legend(loc='lower right')
+    # plt.show()
 
 
 if __name__ == "__main__":
