@@ -19,18 +19,18 @@ LABEL_INFO_PATH="$LABEL_INFO_DIR/label_info.csv"
 OUTPUT_DIR=$LABEL_INFO_DIR
 EVAL_RATIO=0.1
 TEST_RATIO=0.1
-TRAIN_CSV_PATH="$LABEL_INFO_DIR/train.csv"
-EVAL_CSV_PATH="$LABEL_INFO_DIR/eval.csv"
-TEST_CSV_PATH="$LABEL_INFO_DIR/test.csv"
+# TRAIN_CSV_PATH="$LABEL_INFO_DIR/train.csv"
+# EVAL_CSV_PATH="$LABEL_INFO_DIR/eval.csv"
+# TEST_CSV_PATH="$LABEL_INFO_DIR/test.csv"
 EPOCHS=50
 BATCH_SIZE=64
-EXPERIMENT_CONFIG_PATH=experiments/default.cfg
+# EXPERIMENT_CONFIG_PATH=experiments/default.cfg
 
 
 #define the resampled data directory
 RESAMPLED_FEATURE_DIR=data/resampled_features
 RESAMPLED_LABEL_DIR=data/resampled_labels
-RESAMPLED_LABEL_INFO_PATH="$LABEL_INFO_DIR/label_train_resampled.csv"
+
 CONTEXTUAL_FEATURE_DIR=data/contextual_features
 CONTEXTUAL_LABEL_DIR=data/contextual_labels
 LABEL_INFO_CONTEXT_PATH="$LABEL_INFO_DIR/label_info_context.csv"
@@ -38,6 +38,11 @@ WINDOW_SIZE=5
 
 RESAMPLED_TRAIN_CSV_PATH="$LABEL_INFO_DIR/train_context.csv"
 
+# Define simple model train/eval data paths
+# TRAIN_DATA_PATH="data/metadata/label_train_resampled.csv"
+RESAMPLED_TRAIN_PATH="$LABEL_INFO_DIR/label_train_resampled.csv"
+EVAL_DATA_PATH="data/metadata/eval_context.csv"
+TEST_DATA_PATH="data/metadata/test_context.csv"
 
 
 
@@ -97,7 +102,7 @@ if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
 fi
 python src/feature_extraction/resample_data.py \
     --label_info_path $RESAMPLED_TRAIN_CSV_PATH \
-    --output_path $RESAMPLED_LABEL_INFO_PATH \
+    --output_path $RESAMPLED_TRAIN_PATH \
     --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
     --label_dir $CONTEXTUAL_LABEL_DIR \
     --resampled_feature_dir $RESAMPLED_FEATURE_DIR \
@@ -107,36 +112,38 @@ python src/feature_extraction/resample_data.py \
 
 
 echo "Training Logistic Regression model"
+
 python src/simple_model_train_and_eval/LR_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_CSV_PATH \
-    --eval_csv_path $EVAL_CSV_PATH \
-    --test_csv_path $TEST_CSV_PATH \
-    --epochs $EPOCHS \
-    --batch_size $BATCH_SIZE \
-    --config_path $EXPERIMENT_CONFIG_PATH \
+    --train_csv_path $RESAMPLED_TRAIN_PATH \
+    --eval_csv_path $EVAL_DATA_PATH \
+    --test_csv_path $TEST_DATA_PATH \
+    # --epochs $EPOCHS \
+    # --batch_size $BATCH_SIZE \
+    # --config_path $EXPERIMENT_CONFIG_PATH \
     # --output_model_path models/best_logistic_model
 
 echo "Training Support Vector Machine model"
 python src/simple_model_train_and_eval/SVM_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_CSV_PATH \
-    --eval_csv_path $EVAL_CSV_PATH \
-    --test_csv_path $TEST_CSV_PATH \
-    --epochs $EPOCHS \
-    --batch_size $BATCH_SIZE \
-    --config_path $EXPERIMENT_CONFIG_PATH \
-    # --output_model_path models/best_rf_model.joblib
+    --train_csv_path $RESAMPLED_TRAIN_PATH \
+    --eval_csv_path $EVAL_DATA_PATH \
+    --test_csv_path $TEST_DATA_PATH \
+    # --epochs $EPOCHS \
+    # --batch_size $BATCH_SIZE \
+    # --config_path $EXPERIMENT_CONFIG_PATH \
+
 
 
 echo "Training Random Forest model"
+
 python src/simple_model_train_and_eval/RF_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_CSV_PATH \
-    --eval_csv_path $EVAL_CSV_PATH \
-    --test_csv_path $TEST_CSV_PATH \
-    --epochs $EPOCHS \
-    --batch_size $BATCH_SIZE \
-    --config_path $EXPERIMENT_CONFIG_PATH \
-    # --output_model_path models/best_svm_model.joblib
+    --train_csv_path $RESAMPLED_TRAIN_PATH \
+    --eval_csv_path $EVAL_DATA_PATH\
+    --test_csv_path $TEST_DATA_PATH \
+    # --epochs $EPOCHS \
+    # --batch_size $BATCH_SIZE \
+    # --config_path $EXPERIMENT_CONFIG_PATH \
 
 
 
 echo "Pipeline execution completed."
+

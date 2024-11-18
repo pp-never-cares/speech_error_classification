@@ -40,7 +40,8 @@ def resample_data_downsample_upweight(df, contextual_feature_dir, label_dir, res
         pd.DataFrame: Resampled DataFrame with additional 'example_weight' column.
     """
     # Set binary class based on 'label_count'
-    df['class'] = df['label_count'].apply(lambda x: 1 if x > 0 else 0)
+    # df['class'] = df['label_count'].apply(lambda x: 1 if x > 0 else 0)
+    df['class'] = df['label_list'].apply(lambda x: 1 if "Phonological" in x else 0)
 
     # Separate error and non-error samples
     error_samples = df[df['class'] == 1].copy()
