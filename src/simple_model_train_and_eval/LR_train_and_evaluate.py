@@ -3,7 +3,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
 from sklearn.model_selection import cross_val_score, cross_validate, KFold
 from joblib import dump
-import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 
 def evaluate_cross_validation(model, X, y, cv_folds):
