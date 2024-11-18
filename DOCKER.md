@@ -24,9 +24,9 @@ project/
 
 `docker build -t speech-error-ml .`
 
-For MacOS user, it should be: 
+For MacOS user, it should be:
 
-'docker buildx build --platform linux/amd64 -t macarious/speech-error-ml .'
+`docker buildx build --platform linux/amd64 -t speech-error-ml .`
 
 ## Steps to Upload the Docker Image to Docker Hub
 

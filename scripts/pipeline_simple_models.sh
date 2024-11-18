@@ -112,7 +112,8 @@ python src/feature_extraction/resample_data.py \
 
 
 echo "Training Logistic Regression model"
-python src/Simple_models/LR_train_and_evaluate.py \
+
+python src/simple_model_train_and_eval/LR_train_and_evaluate.py \
     --train_csv_path $RESAMPLED_TRAIN_PATH \
     --eval_csv_path $EVAL_DATA_PATH \
     --test_csv_path $TEST_DATA_PATH \
@@ -122,25 +123,25 @@ python src/Simple_models/LR_train_and_evaluate.py \
     # --output_model_path models/best_logistic_model
 
 echo "Training Support Vector Machine model"
-python src/Simple_models/SVM_train_and_evaluate.py \
+python src/simple_model_train_and_eval/SVM_train_and_evaluate.py \
     --train_csv_path $RESAMPLED_TRAIN_PATH \
     --eval_csv_path $EVAL_DATA_PATH \
     --test_csv_path $TEST_DATA_PATH \
     # --epochs $EPOCHS \
     # --batch_size $BATCH_SIZE \
     # --config_path $EXPERIMENT_CONFIG_PATH \
-    # --output_model_path models/best_rf_model.joblib
+
 
 
 echo "Training Random Forest model"
-python src/Simple_models/RF_train_and_evaluate.py \
+
+python src/simple_model_train_and_eval/RF_train_and_evaluate.py \
     --train_csv_path $RESAMPLED_TRAIN_PATH \
     --eval_csv_path $EVAL_DATA_PATH\
     --test_csv_path $TEST_DATA_PATH \
     # --epochs $EPOCHS \
     # --batch_size $BATCH_SIZE \
     # --config_path $EXPERIMENT_CONFIG_PATH \
-    # --output_model_path models/best_svm_model.joblib
 
 
 
