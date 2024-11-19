@@ -1,10 +1,10 @@
 import prepare_data
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV
 from joblib import dump
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
+
 
 def evaluate_model_with_threshold(model, X_eval, y_eval, threshold=0.1):
     """Evaluate Random Forest model with an adjustable decision threshold."""
@@ -21,13 +21,14 @@ def evaluate_model_with_threshold(model, X_eval, y_eval, threshold=0.1):
     print(f"Accuracy: {accuracy}, Precision: {precision}, Recall: {recall}, F1 Score: {f1}")
     return accuracy, precision, recall, f1
 
+
 def main():
     # Calculate target_length from training data
     target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv", "data/contextual_features")
     print(f"Using target length of {target_length} based on maximum sequence length in training data.")
 
     # Load training data
-    X_train, y_train, sample_weights_train, scaler = prepare_data.load_train_data(
+    X_train, y_train, sample_weights_train, _ = prepare_data.load_train_data(
         target_length=target_length,
         primary_feature_dir="data/contextual_features",
         secondary_feature_dir="data/resampled_features"
@@ -38,7 +39,7 @@ def main():
         target_length=target_length,
         primary_feature_dir="data/contextual_features",
     )
-    
+
     class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y_train), y=y_train)
     class_weight_dict = dict(enumerate(class_weights))
 
@@ -50,9 +51,6 @@ def main():
     y_train_pred = baseline_model.predict(X_train)
     print("\nClassification Report for the baseline Random Forest model")
     print(classification_report(y_train, y_train_pred))
-    
-    
-    
 
     # Evaluate baseline model with custom threshold
     print("\nEvaluation Results for the baseline Random Forest model")
@@ -60,10 +58,10 @@ def main():
     _, _, _, f1 = evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=baseline_threshold)
 
     # Define the parameter grid for Grid Search
-   
     # Save the best model
     dump(baseline_model, 'models/baseline_model/best_rf_model.joblib')
     print(f"\nBest model saved as best_rf_model.joblib with F1 Score: {f1}")
+
 
 if __name__ == "__main__":
     main()
