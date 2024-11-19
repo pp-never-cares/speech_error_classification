@@ -61,12 +61,13 @@ TEST_DATA_PATH="data/metadata/test_downsample.csv"
 # fi
 # python src/feature_extraction/generate_features.py --wav_list $WAVE_LIST --wav_dir $WAVE_DIR --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# # Generate labels
+# Generate labels
 # echo "Generating labels"
 # if [ ! -d $LABEL_DIR ]; then
 #     mkdir -p $LABEL_DIR
 # fi
 # python src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
+
 
 # Add contextual features and labels
 echo "Adding contextual features and labels"
