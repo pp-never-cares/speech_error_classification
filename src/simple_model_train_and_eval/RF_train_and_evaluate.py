@@ -88,6 +88,7 @@ def main():
  
     
     print(f"\nBest model saved as best_rf_model.joblib with F1 Score: {f1}")
+    
     dump(baseline_model, 'models/baseline_model/best_rf_model.joblib')
 
 

@@ -94,7 +94,25 @@ def main():
     output_path = os.path.join(output_dir, "roc_auc_curve_RD_DOWN.png")
     plt.savefig(output_path)
     plt.close()
-    dump(baseline_model, 'best_rf_model.joblib')
+    
+    # Feature importance ranking
+    importances = baseline_model.feature_importances_
+    # Restrict to top 20 features
+    indices = np.argsort(importances)[::-1][:20]
+    print("Feature ranking:")
+    for f in range(len(indices)):  # Fix: Iterate only over available top indices
+        print(f"{f + 1}. feature {indices[f]} ({importances[indices[f]]})")
+    
+    # Save feature importances to a CSV file
+    feature_importance = [[indices[f], importances[indices[f]]] for f in range(len(indices))]
+    output_csv_path = os.path.join(output_dir, "feature_importance_downsampled.csv")
+    np.savetxt(output_csv_path, feature_importance, delimiter=",", fmt='%s', header="Feature,Importance")
+    
+    # Save the model
+    output_dir = "data/visualization"
+    dump(baseline_model, 'models/baseline_model/best_rf_model.joblib')
+
+
 
 
 if __name__ == "__main__":

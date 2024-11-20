@@ -105,7 +105,7 @@ def main():
     output_path = os.path.join(output_dir, "roc_auc_curve_LR_DOWN.png")
     plt.savefig(output_path)
     plt.close()
-    dump(model, 'best_logistic_model.joblib')
+    dump(model, 'models/baseline_model/best_logistic_model.joblib')
 
 
 if __name__ == "__main__":
