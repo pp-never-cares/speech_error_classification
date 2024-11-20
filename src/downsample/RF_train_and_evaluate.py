@@ -71,7 +71,7 @@ def main():
     _, _, _, f1 = evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=baseline_threshold)
 
     # Save the trained model
-    dump(baseline_model, 'best_rf_model.joblib')
+   
     print(f"\nBest model saved as 'best_rf_model.joblib' with F1 Score: {f1}")
     
     # draw ROC curve
@@ -94,6 +94,7 @@ def main():
     output_path = os.path.join(output_dir, "roc_auc_curve_RD_DOWN.png")
     plt.savefig(output_path)
     plt.close()
+    dump(baseline_model, 'best_rf_model.joblib')
 
 
 if __name__ == "__main__":

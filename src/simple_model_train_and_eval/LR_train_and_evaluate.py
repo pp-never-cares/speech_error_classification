@@ -81,7 +81,7 @@ def main():
     print(classification_report(y_eval, y_eval_pred_custom))
 
     # Save the trained model
-    dump(model, 'models/baseline_model/best_logistic_model.joblib')
+    
     print("\nModel saved as best_logistic_model.joblib")
     
     # draw ROC curve and save to data/visualization
@@ -104,6 +104,7 @@ def main():
     output_path = os.path.join(output_dir, "roc_auc_curve_LR_simple.png")
     plt.savefig(output_path)
     plt.close()
+    dump(model, 'models/baseline_model/best_logistic_model.joblib')
 
 if __name__ == "__main__":
     main()

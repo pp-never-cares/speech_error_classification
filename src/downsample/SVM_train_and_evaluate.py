@@ -168,7 +168,7 @@ def main():
     evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
 
     # Save the best model
-    dump(best_model, 'best_svm_model.joblib')
+    
     print(f"\nBest model saved as best_svm_model.joblib with F1 Score: {best_score}")
     
     #draw ROC curve for the best model
@@ -191,6 +191,7 @@ def main():
     output_path = os.path.join(output_dir, "roc_auc_curve_for_SVM_DOWN.png")
     plt.savefig(output_path)
     plt.close()
+    dump(best_model, 'best_svm_model.joblib')
 
 if __name__ == "__main__":
     main()
