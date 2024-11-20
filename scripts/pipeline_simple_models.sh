@@ -68,47 +68,47 @@ TEST_DATA_PATH="data/metadata/test_context.csv"
 # fi
 # python src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# Add contextual features and labels
-echo "Adding contextual features and labels"
-if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
-    mkdir -p $CONTEXTUAL_FEATURE_DIR
-fi
-if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
-    mkdir -p $CONTEXTUAL_LABEL_DIR
-fi
+# # Add contextual features and labels
+# echo "Adding contextual features and labels"
+# if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
+#     mkdir -p $CONTEXTUAL_FEATURE_DIR
+# fi
+# if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
+#     mkdir -p $CONTEXTUAL_LABEL_DIR
+# fi
 
-python src/feature_extraction/add_contextual_features.py \
-    --label_info_path $LABEL_INFO_PATH \
-    --output_path $LABEL_INFO_CONTEXT_PATH \
-    --feature_dir $FEATURE_DIR \
-    --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
-    --contextual_label_dir $CONTEXTUAL_LABEL_DIR \
-    --window_size $WINDOW_SIZE
-
-
-
-# Split data into train, eval, and test sets
-echo "Splitting added contextual feature data into train, eval, and test sets"
-python src/feature_extraction/split_contextual_data.py --label_info_path $LABEL_INFO_CONTEXT_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+# python src/feature_extraction/add_contextual_features.py \
+#     --label_info_path $LABEL_INFO_PATH \
+#     --output_path $LABEL_INFO_CONTEXT_PATH \
+#     --feature_dir $FEATURE_DIR \
+#     --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
+#     --contextual_label_dir $CONTEXTUAL_LABEL_DIR \
+#     --window_size $WINDOW_SIZE
 
 
-# Resample training data to address class imbalance using the contextual features
-echo "Resampling data for balance"
-if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
-    mkdir -p $CONTEXTUAL_FEATURE_DIR
-fi
-if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
-    mkdir -p $CONTEXTUAL_LABEL_DIR
-fi
-python src/feature_extraction/resample_data.py \
-    --label_info_path $RESAMPLED_TRAIN_CSV_PATH \
-    --output_path $RESAMPLED_TRAIN_PATH \
-    --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
-    --label_dir $CONTEXTUAL_LABEL_DIR \
-    --resampled_feature_dir $RESAMPLED_FEATURE_DIR \
-    --resampled_label_dir $RESAMPLED_LABEL_DIR \
-    --downsample_factor 2 \
-    --target_ratio 1
+
+# # Split data into train, eval, and test sets
+# echo "Splitting added contextual feature data into train, eval, and test sets"
+# python src/feature_extraction/split_contextual_data.py --label_info_path $LABEL_INFO_CONTEXT_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+
+
+# # Resample training data to address class imbalance using the contextual features
+# echo "Resampling data for balance"
+# if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
+#     mkdir -p $CONTEXTUAL_FEATURE_DIR
+# fi
+# if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
+#     mkdir -p $CONTEXTUAL_LABEL_DIR
+# fi
+# python src/feature_extraction/resample_data.py \
+#     --label_info_path $RESAMPLED_TRAIN_CSV_PATH \
+#     --output_path $RESAMPLED_TRAIN_PATH \
+#     --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
+#     --label_dir $CONTEXTUAL_LABEL_DIR \
+#     --resampled_feature_dir $RESAMPLED_FEATURE_DIR \
+#     --resampled_label_dir $RESAMPLED_LABEL_DIR \
+#     --downsample_factor 2 \
+#     --target_ratio 1
 
 
 echo "Training Logistic Regression model"

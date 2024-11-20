@@ -70,44 +70,44 @@ TEST_DATA_PATH="data/metadata/test_downsample.csv"
 
 
 # Add contextual features and labels
-echo "Adding contextual features and labels"
-if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
-    mkdir -p $CONTEXTUAL_FEATURE_DIR
-fi
-if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
-    mkdir -p $CONTEXTUAL_LABEL_DIR
-fi
+# echo "Adding contextual features and labels"
+# if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
+#     mkdir -p $CONTEXTUAL_FEATURE_DIR
+# fi
+# if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
+#     mkdir -p $CONTEXTUAL_LABEL_DIR
+# fi
 
-python src/feature_extraction/add_contextual_features.py \
-    --label_info_path $LABEL_INFO_PATH \
-    --output_path $LABEL_INFO_CONTEXT_PATH \
-    --feature_dir $FEATURE_DIR \
-    --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
-    --contextual_label_dir $CONTEXTUAL_LABEL_DIR \
-    --window_size $WINDOW_SIZE
-
-
-# Downsample non-error data to address class imbalance using the contextual features
-echo "Downsampling data for balance"
-if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
-    mkdir -p $CONTEXTUAL_FEATURE_DIR
-fi
-if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
-    mkdir -p $CONTEXTUAL_LABEL_DIR
-fi
-python src/feature_extraction/downsampling.py \
-    --label_info_path $LABEL_INFO_CONTEXT_PATH \
-    --output_path $DOWNSAMPLED_LABEL_INFO_PATH \
-    --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
-    --label_dir $CONTEXTUAL_LABEL_DIR \
-    --downsampled_feature_dir $DOWNSAMPLED_FEATURE_DIR \
-    --downsampled_label_dir $DOWNSAMPLED_LABEL_DIR \
+# python src/feature_extraction/add_contextual_features.py \
+#     --label_info_path $LABEL_INFO_PATH \
+#     --output_path $LABEL_INFO_CONTEXT_PATH \
+#     --feature_dir $FEATURE_DIR \
+#     --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
+#     --contextual_label_dir $CONTEXTUAL_LABEL_DIR \
+#     --window_size $WINDOW_SIZE
 
 
+# # Downsample non-error data to address class imbalance using the contextual features
+# echo "Downsampling data for balance"
+# if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
+#     mkdir -p $CONTEXTUAL_FEATURE_DIR
+# fi
+# if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
+#     mkdir -p $CONTEXTUAL_LABEL_DIR
+# fi
+# python src/feature_extraction/downsampling.py \
+#     --label_info_path $LABEL_INFO_CONTEXT_PATH \
+#     --output_path $DOWNSAMPLED_LABEL_INFO_PATH \
+#     --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
+#     --label_dir $CONTEXTUAL_LABEL_DIR \
+#     --downsampled_feature_dir $DOWNSAMPLED_FEATURE_DIR \
+#     --downsampled_label_dir $DOWNSAMPLED_LABEL_DIR \
 
-# Split data into train, eval, and test sets
-echo "Splitting added contextual feature data into train, eval, and test sets"
-python src/feature_extraction/split_downsample_data.py --label_info_path $DOWNSAMPLED_LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+
+
+# # Split data into train, eval, and test sets
+# echo "Splitting added contextual feature data into train, eval, and test sets"
+# python src/feature_extraction/split_downsample_data.py --label_info_path $DOWNSAMPLED_LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
 
 echo "Training Logistic Regression model"
