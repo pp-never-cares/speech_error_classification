@@ -4,8 +4,8 @@ from sklearn.metrics import precision_score, recall_score, f1_score, classificat
 from sklearn.model_selection import cross_validate, KFold
 from joblib import dump
 from sklearn.metrics import roc_curve, auc
-# import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as plt
+import os
 
 def evaluate_cross_validation(model, X, y, cv_folds):
     """
@@ -87,18 +87,24 @@ def main():
     dump(model, 'best_logistic_model.joblib')
     print("\nModel saved as best_logistic_model.joblib")
 
-    # Generate and plot ROC curve
-    # fpr, tpr, _ = roc_curve(y_eval, y_eval_prob)
-    # roc_auc = auc(fpr, tpr)
+    fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
+    roc_auc = auc(fpr, tpr)
 
-    # plt.figure()
-    # plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-    # plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    # plt.xlabel('False Positive Rate')
-    # plt.ylabel('True Positive Rate')
-    # plt.title('Receiver Operating Characteristic (ROC) Curve')
-    # plt.legend(loc='lower right')
-    # plt.show()
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='gray', lw=2, linestyle='--', label='Random Guess')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+    plt.legend(loc="lower right")
+
+    # Save the plot
+    output_dir = "data/visualization"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "roc_auc_curve_LR_DOWN.png")
+    plt.savefig(output_path)
+    plt.close()
 
 
 if __name__ == "__main__":

@@ -4,6 +4,9 @@ from sklearn.ensemble import RandomForestClassifier
 from joblib import dump
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+import os
 
 
 def evaluate_model_with_threshold(model, X_eval, y_eval, threshold=0.1):
@@ -59,6 +62,30 @@ def main():
 
     # Define the parameter grid for Grid Search
     # Save the best model
+    
+    # generate the ROC curve and save it to data/visualization
+    y_eval_prob = baseline_model.predict_proba(X_eval)[:, 1]
+    fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
+    roc_auc = auc(fpr, tpr)
+    print(f"ROC AUC: {roc_auc}")
+    fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
+
+# Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='gray', lw=2, linestyle='--', label='Random Guess')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+    plt.legend(loc="lower right")
+
+    # Save the plot
+    output_dir = "data/visualization"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "roc_auc_curve_RF_SIMPLE.png")
+    plt.savefig(output_path)
+    plt.close()
+ 
     dump(baseline_model, 'models/baseline_model/best_rf_model.joblib')
     print(f"\nBest model saved as best_rf_model.joblib with F1 Score: {f1}")
 

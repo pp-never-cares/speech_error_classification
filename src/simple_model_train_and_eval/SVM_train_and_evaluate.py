@@ -4,6 +4,9 @@ from sklearn.svm import SVC
 from sklearn.model_selection import StratifiedKFold
 from joblib import dump
 import numpy as np
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+import os
 
 def evaluate_model_with_threshold(model, X_eval, y_eval, threshold=0.1):
     """Evaluate model with an adjustable decision threshold."""
@@ -145,6 +148,28 @@ def main():
     print("\nEvaluation Results for the best model on evaluation data")
     evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
     
+    # Plot ROC curve
+    y_eval_prob = best_model.decision_function(X_eval)
+    
+    fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='gray', lw=2, linestyle='--', label='Random Guess')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+    plt.legend(loc="lower right")
+
+    # Save the plot
+    output_dir = "data/visualization"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "roc_auc_curve_SVM_SIMPLE.png")
+    plt.savefig(output_path)
+    plt.close()
+        
     # Save best model
     dump(best_model, 'models/baseline_model/best_svm_model.joblib')
     print(f"\nBest model saved as best_svm_model.joblib with F1 Score: {best_score}")

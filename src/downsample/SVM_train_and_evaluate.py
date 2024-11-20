@@ -4,6 +4,9 @@ from sklearn.svm import SVC
 from sklearn.model_selection import StratifiedKFold
 from joblib import dump
 import numpy as np
+import os
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
 
 def find_best_threshold(model, X_eval, y_eval, thresholds=np.arange(0.0, 1.0, 0.05)):
     """
@@ -167,6 +170,27 @@ def main():
     # Save the best model
     dump(best_model, 'best_svm_model.joblib')
     print(f"\nBest model saved as best_svm_model.joblib with F1 Score: {best_score}")
+    
+    #draw ROC curve for the best model
+    y_eval_prob = best_model.decision_function(X_eval)
+    fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='gray', lw=2, linestyle='--', label='Random Guess')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+    plt.legend(loc="lower right")
+
+    # Save the plot
+    output_dir = "data/visualization"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "roc_auc_curve_for_SVM_DOWN.png")
+    plt.savefig(output_path)
+    plt.close()
 
 if __name__ == "__main__":
     main()
