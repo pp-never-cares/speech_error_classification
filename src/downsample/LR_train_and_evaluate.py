@@ -70,7 +70,7 @@ def main():
     model.fit(X_train, y_train, sample_weight=sample_weights_train)
 
     # Evaluate on the evaluation set using a customizable threshold
-    custom_threshold = 0.5  # You can change this value to your desired threshold
+    custom_threshold = 0.1  # You can change this value to your desired threshold
     print(
         f"\nEvaluation Results for the Logistic Regression Model with Custom Threshold (Threshold = {custom_threshold}):")
 
