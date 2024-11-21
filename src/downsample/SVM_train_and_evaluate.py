@@ -120,16 +120,27 @@ def main():
     )
  
         # Train baseline model
+    
     baseline_model = SVC(kernel='linear', C=1.0, class_weight='balanced')
     print("\nTraining baseline model with linear kernel (C=1.0)")
     baseline_model.fit(X_train, y_train, sample_weight=sample_weights_train)
  
     # Evaluate baseline model
     print("\nTraining Data Results for the baseline model")
-    evaluate_model_with_threshold(baseline_model, X_train, y_train, threshold=0.4)
+    evaluate_model_with_threshold(baseline_model, X_train, y_train, threshold=0.3)
+    
     
     print("\nEvaluation Results for the baseline model")
-    evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=0.4)
+    evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=0.3)
+    
+    best_params = {'C': 1, 'gamma': 0.1, 'kernel': 'rbf'}
+    best_model = SVC(**best_params)
+    print("\nTraining best model with RBF kernel (C=1, gamma=0.1)")
+    best_model.fit(X_train, y_train, sample_weight=sample_weights_train)
+    evaluate_model_with_threshold(best_model, X_train, y_train, threshold=0.3)
+    print("\nEvaluation Results for the best model")
+    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.3)
+    
  
     # Step 1: Search for the best model
     # print("\nPerforming grid search to find the best model...")
@@ -162,7 +173,7 @@ def main():
     # print("\nEvaluating the best model on the evaluation set...")
     # evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
     
-    y_eval_prob = baseline_model.decision_function(X_eval)
+    y_eval_prob = best_model.decision_function(X_eval)
     
     fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
     roc_auc = auc(fpr, tpr)
@@ -182,7 +193,7 @@ def main():
     plt.savefig(os.path.join(output_dir, "roc_curve_SVM_DOWN.png"))
  
     # Save the best model
-    dump(baseline_model, 'models/baseline_model/best_svm_model.joblib')
+    dump(best_model, 'models/baseline_model/best_svm_model.joblib')
     print("\nBest model saved as 'best_svm_model.joblib'")
 if __name__ == "__main__":
     main()
