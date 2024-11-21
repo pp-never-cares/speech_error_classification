@@ -120,26 +120,26 @@ python src/downsample/LR_train_and_evaluate.py \
     # --config_path $EXPERIMENT_CONFIG_PATH \
     # --output_model_path models/best_logistic_model
 
-# echo "Training Random Forest model"
-# python src/downsample/RF_train_and_evaluate.py \
-#     --train_csv_path $TRAIN_DATA_PATH \
-#     --eval_csv_path $EVAL_DATA_PATH \
-#     --test_csv_path $TEST_DATA_PATH \
-#     # --epochs $EPOCHS \
-#     # --batch_size $BATCH_SIZE \
-#     # --config_path $EXPERIMENT_CONFIG_PATH \
-#     # --output_model_path models/best_svm_model.joblib
+echo "Training Random Forest model"
+python src/downsample/RF_train_and_evaluate.py \
+    --train_csv_path $TRAIN_DATA_PATH \
+    --eval_csv_path $EVAL_DATA_PATH \
+    --test_csv_path $TEST_DATA_PATH \
+    # --epochs $EPOCHS \
+    # --batch_size $BATCH_SIZE \
+    # --config_path $EXPERIMENT_CONFIG_PATH \
+    # --output_model_path models/best_svm_model.joblib
 
 
-# echo "Training Support Vector Machine model"
-# python src/downsample/SVM_train_and_evaluate.py \
-#     --train_csv_path $TRAIN_DATA_PATH \
-#     --eval_csv_path $EVAL_DATA_PATH \
-#     --test_csv_path $TEST_DATA_PATH \
-#     # --epochs $EPOCHS \
-#     # --batch_size $BATCH_SIZE \
-#     # --config_path $EXPERIMENT_CONFIG_PATH \
-#     # --output_model_path models/best_rf_model.joblib
+echo "Training Support Vector Machine model"
+python src/downsample/SVM_train_and_evaluate.py \
+    --train_csv_path $TRAIN_DATA_PATH \
+    --eval_csv_path $EVAL_DATA_PATH \
+    --test_csv_path $TEST_DATA_PATH \
+    # --epochs $EPOCHS \
+    # --batch_size $BATCH_SIZE \
+    # --config_path $EXPERIMENT_CONFIG_PATH \
+    # --output_model_path models/best_rf_model.joblib
 
 
 
