@@ -68,8 +68,7 @@ def main():
     fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
     roc_auc = auc(fpr, tpr)
     print(f"ROC AUC: {roc_auc}")
-    fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
-
+    
 # Plot the ROC curve
     plt.figure()
     plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
