@@ -126,43 +126,43 @@ def main():
  
     # Evaluate baseline model
     print("\nTraining Data Results for the baseline model")
-    evaluate_model_with_threshold(baseline_model, X_train, y_train, threshold=0.1)
+    evaluate_model_with_threshold(baseline_model, X_train, y_train, threshold=0.4)
     
     print("\nEvaluation Results for the baseline model")
-    evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=0.1)
+    evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=0.4)
  
     # Step 1: Search for the best model
-    print("\nPerforming grid search to find the best model...")
-    param_grid = [
-        {'kernel': ['linear'], 'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100]},
-        {'kernel': ['rbf'], 'C': [1, 10, 100], 'gamma': [0.001, 0.01, 0.1]}
-    ]
-    grid_search = GridSearchCV(
-        SVC(class_weight='balanced'),
-        param_grid,
-        scoring='f1',
-        cv=3,  # 3-fold cross-validation for grid search
-        verbose=2,
-        n_jobs=-1
-    )
-    grid_search.fit(X_train, y_train, sample_weight=sample_weights_train)
+    # print("\nPerforming grid search to find the best model...")
+    # param_grid = [
+    #     {'kernel': ['linear'], 'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100]},
+    #     {'kernel': ['rbf'], 'C': [1, 10, 100], 'gamma': [0.001, 0.01, 0.1]}
+    # ]
+    # grid_search = GridSearchCV(
+    #     SVC(class_weight='balanced'),
+    #     param_grid,
+    #     scoring='f1',
+    #     cv=3,  # 3-fold cross-validation for grid search
+    #     verbose=2,
+    #     n_jobs=-1
+    # )
+    # grid_search.fit(X_train, y_train, sample_weight=sample_weights_train)
         
-    # Extract the best model and parameters
-    best_model = grid_search.best_estimator_
-    best_params = grid_search.best_params_
-    print(f"Best parameters: {best_params}")
+    # # Extract the best model and parameters
+    # best_model = grid_search.best_estimator_
+    # best_params = grid_search.best_params_
+    # print(f"Best parameters: {best_params}")
  
-    # Step 2: Perform cross-validation on the best model
-    print("\nPerforming 5-fold cross-validation on the best model...")
-    skf = StratifiedKFold(n_splits=5)
-    avg_f1, avg_precision, avg_recall = cross_validate_model(best_model, X_train, y_train, cv=skf, threshold=0.1)
-    print(f"\nCross-validation results: F1={avg_f1:.4f}, Precision={avg_precision:.4f}, Recall={avg_recall:.4f}")
+    # # Step 2: Perform cross-validation on the best model
+    # print("\nPerforming 5-fold cross-validation on the best model...")
+    # skf = StratifiedKFold(n_splits=5)
+    # avg_f1, avg_precision, avg_recall = cross_validate_model(best_model, X_train, y_train, cv=skf, threshold=0.4)
+    # print(f"\nCross-validation results: F1={avg_f1:.4f}, Precision={avg_precision:.4f}, Recall={avg_recall:.4f}")
  
-    # Step 3: Evaluate the best model on the evaluation set
-    print("\nEvaluating the best model on the evaluation set...")
-    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
+    # # Step 3: Evaluate the best model on the evaluation set
+    # print("\nEvaluating the best model on the evaluation set...")
+    # evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
     
-    y_eval_prob = best_model.decision_function(X_eval)
+    y_eval_prob = baseline_model.decision_function(X_eval)
     
     fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
     roc_auc = auc(fpr, tpr)
@@ -182,7 +182,7 @@ def main():
     plt.savefig(os.path.join(output_dir, "roc_curve_SVM_DOWN.png"))
  
     # Save the best model
-    dump(best_model, 'models/baseline_model/best_svm_model.joblib')
+    dump(baseline_model, 'models/baseline_model/best_svm_model.joblib')
     print("\nBest model saved as 'best_svm_model.joblib'")
 if __name__ == "__main__":
     main()

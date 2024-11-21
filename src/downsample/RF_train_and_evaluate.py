@@ -67,7 +67,7 @@ def main():
 
     # Evaluate the baseline model on evaluation data with a custom threshold
     print("\nEvaluation Results for the baseline Random Forest model on evaluation data:")
-    baseline_threshold = 0.1  # Set baseline threshold (default for Random Forests)
+    baseline_threshold = 0.5  # Set baseline threshold (default for Random Forests)
     _, _, _, f1 = evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=baseline_threshold)
 
     # Save the trained model
