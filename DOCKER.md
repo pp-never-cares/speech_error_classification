@@ -70,9 +70,19 @@ This pulls the Docker image and converts it to a Singularity image `speech-error
 
 `module load singularity`
 
+    For a safer process, check all versions of Singularity file:
+
+`module unvail singularity`
+
+    And choose the newest version( updated to 3.10.3 at Nov 2023 ):
+
+`module unvail singularity/3.10.3`
+
 3. Execute the image using the following command:
 
 `singularity run --nv --bind /work/van-speech-nlp/hui.mac/sfused/data:/app/data,/work/van-speech-nlp/hui.mac/sfused/logs:/app/logs,/work/van-speech-nlp/hui.mac/sfused/experiments:/app/experiments,/work/van-speech-nlp/hui.mac/sfused/models:/app/models,/work/van-speech-nlp/hui.mac/sfused/checkpoints:/app/checkpoints --pwd /app /work/van-speech-nlp/hui.mac/sfused/speech-error-ml_latest.sif /bin/bash`
+
+    "--bind" allows access to files under /src or /scripts too.
 
 4. Run the Python script inside the container:
 
@@ -81,6 +91,18 @@ bash scripts/process_audio_files.sh
 bash scripts/generate_features.sh
 bash scripts/split_data.sh
 python3 src/training/main.py experiments/exp_loss_0_binary_crossentropy.cfg
+```
+
+    For simple models, sandbox model running:
+
+```
+bash scripts/pipeline_downsample.sh
+```
+
+    For simple models, running on resampled training dataset and un-resampled eval dataset:
+
+```
+bash scripts/pipeline_simple_models.sh
 ```
 
 5. Clear cache if needed:
