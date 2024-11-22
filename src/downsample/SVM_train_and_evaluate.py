@@ -137,9 +137,9 @@ def main():
     best_model = SVC(**best_params)
     print("\nTraining best model with RBF kernel (C=1, gamma=0.1)")
     best_model.fit(X_train, y_train, sample_weight=sample_weights_train)
-    evaluate_model_with_threshold(best_model, X_train, y_train, threshold=0.3)
+    evaluate_model_with_threshold(best_model, X_train, y_train, threshold=0.2)
     print("\nEvaluation Results for the best model")
-    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.3)
+    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.2)
     
  
     # Step 1: Search for the best model
@@ -163,15 +163,15 @@ def main():
     # best_params = grid_search.best_params_
     # print(f"Best parameters: {best_params}")
  
-    # # Step 2: Perform cross-validation on the best model
-    # print("\nPerforming 5-fold cross-validation on the best model...")
-    # skf = StratifiedKFold(n_splits=5)
-    # avg_f1, avg_precision, avg_recall = cross_validate_model(best_model, X_train, y_train, cv=skf, threshold=0.4)
-    # print(f"\nCross-validation results: F1={avg_f1:.4f}, Precision={avg_precision:.4f}, Recall={avg_recall:.4f}")
+    # Step 2: Perform cross-validation on the best model
+    print("\nPerforming 5-fold cross-validation on the best model...")
+    skf = StratifiedKFold(n_splits=5)
+    avg_f1, avg_precision, avg_recall = cross_validate_model(best_model, X_train, y_train, cv=skf, threshold=0.2)
+    print(f"\nCross-validation results: F1={avg_f1:.4f}, Precision={avg_precision:.4f}, Recall={avg_recall:.4f}")
  
-    # # Step 3: Evaluate the best model on the evaluation set
-    # print("\nEvaluating the best model on the evaluation set...")
-    # evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
+    # Step 3: Evaluate the best model on the evaluation set
+    print("\nEvaluating the best model on the evaluation set...")
+    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.2)
     
     y_eval_prob = best_model.decision_function(X_eval)
     
