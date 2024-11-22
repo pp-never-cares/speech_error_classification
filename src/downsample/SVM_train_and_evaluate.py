@@ -136,11 +136,9 @@ def main():
     best_params = {'C': 1, 'gamma': 0.1, 'kernel': 'rbf'}
     best_model = SVC(**best_params)
     print("\nTraining best model with RBF kernel (C=1, gamma=0.1)")
-    best_model.fit(X_train, y_train, sample_weight=sample_weights_train)
-    evaluate_model_with_threshold(best_model, X_train, y_train, threshold=0.2)
-    print("\nEvaluation Results for the best model")
-    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.2)
-    
+    best_model.fit(X_train, y_train)
+   
+   
  
     # Step 1: Search for the best model
     # print("\nPerforming grid search to find the best model...")
@@ -171,7 +169,7 @@ def main():
  
     # Step 3: Evaluate the best model on the evaluation set
     print("\nEvaluating the best model on the evaluation set...")
-    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.2)
+    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
     
     y_eval_prob = best_model.decision_function(X_eval)
     
