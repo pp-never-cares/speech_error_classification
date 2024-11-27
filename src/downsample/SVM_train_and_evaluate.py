@@ -132,34 +132,28 @@ def main():
     
     print("\nEvaluation Results for the baseline model")
     evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=0.3)
-    
-    best_params = {'C': 1, 'gamma': 0.1, 'kernel': 'rbf'}
-    best_model = SVC(**best_params)
-    print("\nTraining best model with RBF kernel (C=1, gamma=0.1)")
-    best_model.fit(X_train, y_train)
-   
    
  
     # Step 1: Search for the best model
-    # print("\nPerforming grid search to find the best model...")
-    # param_grid = [
-    #     {'kernel': ['linear'], 'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100]},
-    #     {'kernel': ['rbf'], 'C': [1, 10, 100], 'gamma': [0.001, 0.01, 0.1]}
-    # ]
-    # grid_search = GridSearchCV(
-    #     SVC(class_weight='balanced'),
-    #     param_grid,
-    #     scoring='f1',
-    #     cv=3,  # 3-fold cross-validation for grid search
-    #     verbose=2,
-    #     n_jobs=-1
-    # )
-    # grid_search.fit(X_train, y_train, sample_weight=sample_weights_train)
+    print("\nPerforming grid search to find the best model...")
+    param_grid = [
+        {'kernel': ['linear'], 'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100]},
+        {'kernel': ['rbf'], 'C': [1, 10, 100], 'gamma': [0.001, 0.01, 0.1]}
+    ]
+    grid_search = GridSearchCV(
+        SVC(class_weight='balanced'),
+        param_grid,
+        scoring='f1',
+        cv=3,  # 3-fold cross-validation for grid search
+        verbose=2,
+        n_jobs=-1
+    )
+    grid_search.fit(X_train, y_train, sample_weight=sample_weights_train)
         
-    # # Extract the best model and parameters
-    # best_model = grid_search.best_estimator_
-    # best_params = grid_search.best_params_
-    # print(f"Best parameters: {best_params}")
+    # Extract the best model and parameters
+    best_model = grid_search.best_estimator_
+    best_params = grid_search.best_params_
+    print(f"Best parameters: {best_params}")
  
     # Step 2: Perform cross-validation on the best model
     print("\nPerforming 5-fold cross-validation on the best model...")
