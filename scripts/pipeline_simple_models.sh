@@ -88,39 +88,39 @@ TEST_DATA_PATH="data/metadata/test_context.csv"
 
 
 # Split data into train, eval, and test sets
-echo "Splitting added contextual feature data into train, eval, and test sets"
-python src/feature_extraction/split_contextual_data.py --label_info_path $LABEL_INFO_CONTEXT_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+# echo "Splitting added contextual feature data into train, eval, and test sets"
+# python src/feature_extraction/split_contextual_data.py --label_info_path $LABEL_INFO_CONTEXT_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
 
-# Resample training data to address class imbalance using the contextual features
-echo "Resampling data for balance"
-if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
-    mkdir -p $CONTEXTUAL_FEATURE_DIR
-fi
-if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
-    mkdir -p $CONTEXTUAL_LABEL_DIR
-fi
-python src/feature_extraction/resample_data.py \
-    --label_info_path $RESAMPLED_TRAIN_CSV_PATH \
-    --output_path $RESAMPLED_TRAIN_PATH \
-    --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
-    --label_dir $CONTEXTUAL_LABEL_DIR \
-    --resampled_feature_dir $RESAMPLED_FEATURE_DIR \
-    --resampled_label_dir $RESAMPLED_LABEL_DIR \
-    --downsample_factor 2 \
-    --target_ratio 1
+# # Resample training data to address class imbalance using the contextual features
+# echo "Resampling data for balance"
+# if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
+#     mkdir -p $CONTEXTUAL_FEATURE_DIR
+# fi
+# if [ ! -d $CONTEXTUAL_LABEL_DIR ]; then
+#     mkdir -p $CONTEXTUAL_LABEL_DIR
+# fi
+# python src/feature_extraction/resample_data.py \
+#     --label_info_path $RESAMPLED_TRAIN_CSV_PATH \
+#     --output_path $RESAMPLED_TRAIN_PATH \
+#     --contextual_feature_dir $CONTEXTUAL_FEATURE_DIR \
+#     --label_dir $CONTEXTUAL_LABEL_DIR \
+#     --resampled_feature_dir $RESAMPLED_FEATURE_DIR \
+#     --resampled_label_dir $RESAMPLED_LABEL_DIR \
+#     --downsample_factor 2 \
+#     --target_ratio 1
 
 
-echo "Training Logistic Regression model"
+# echo "Training Logistic Regression model"
 
-python src/simple_model_train_and_eval/LR_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_PATH \
-    --eval_csv_path $EVAL_DATA_PATH \
-    --test_csv_path $TEST_DATA_PATH \
-    # --epochs $EPOCHS \
-    # --batch_size $BATCH_SIZE \
-    # --config_path $EXPERIMENT_CONFIG_PATH \
-    # --output_model_path models/best_logistic_model
+# python src/simple_model_train_and_eval/LR_train_and_evaluate.py \
+#     --train_csv_path $RESAMPLED_TRAIN_PATH \
+#     --eval_csv_path $EVAL_DATA_PATH \
+#     --test_csv_path $TEST_DATA_PATH \
+#     # --epochs $EPOCHS \
+#     # --batch_size $BATCH_SIZE \
+#     # --config_path $EXPERIMENT_CONFIG_PATH \
+#     # --output_model_path models/best_logistic_model
 
 
 
