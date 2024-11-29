@@ -68,11 +68,25 @@ This pulls the Docker image and converts it to a Singularity image `speech-error
 
 4. Run the Python script inside the container:
 
+Convert audio files from .mp3 to .wav, and generate a list of all audio files:
 ```
 bash scripts/process_audio_files.sh
+```
+
+Generate features, labels and split data using the list of audio files generated in the previous step:
+```
 bash scripts/generate_features.sh
 bash scripts/split_data.sh
+```
+
+Train the model using an experiment configuration file (e.g., `experiments/exp_loss_0_binary_crossentropy.cfg`):
+```
 python3 src/training/main.py experiments/exp_loss_0_binary_crossentropy.cfg
+```
+
+Evaluate the model using an experiment configuration file (e.g., `experiments/exp_loss_0_binary_crossentropy.cfg`):
+```
+bash evaluate.sh experiments/exp_loss_0_binary_crossentropy.cfg
 ```
 
 5. Clear cache if needed:
@@ -84,4 +98,6 @@ rm -rf /home/hui.mac/.singularity/cache
 
 6. Exit the container:
 
-`exit`
+```
+exit
+```
