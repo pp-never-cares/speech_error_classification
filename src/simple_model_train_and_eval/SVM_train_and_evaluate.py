@@ -7,6 +7,9 @@ import numpy as np
 from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
 import os
+from sklearn.kernel_approximation import RBFSampler
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 def evaluate_model_with_threshold(model, X_eval, y_eval, threshold=0.1):
     """Evaluate model with an adjustable decision threshold."""
@@ -75,6 +78,7 @@ def cross_validate_model(model, X, y, cv, threshold=0.1):
     
     return avg_f1, avg_precision, avg_recall
 
+
 def main():
     # Load data
     target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv", "data/contextual_features")
@@ -89,23 +93,22 @@ def main():
         scaler=scaler
     )
 
-    # Baseline model with linear kernel
-    baseline_model = SVC(kernel='linear', C=1.0, class_weight='balanced')
-    print("\nTraining baseline model with linear kernel (C=1.0)")
-    baseline_model.fit(X_train, y_train, sample_weight=sample_weights_train)
+    # Optimize: Standardize data and approximate kernel
+    rbf_pipeline = Pipeline([
+        ('scaler', StandardScaler()),  # Standardize features
+        ('rbf_approx', RBFSampler(gamma=0.01, n_components=500)),  # Approximate RBF kernel
+        ('svm', SVC(kernel='linear', C=1.0, class_weight='balanced'))  # Linear SVM on transformed features
+    ])
+
+    print("\nTraining model with RBF kernel approximation and linear SVM")
+    rbf_pipeline.fit(X_train, y_train)
+
+    print("\nEvaluation Results for the RBF kernel approximation model")
+    evaluate_model_with_threshold(rbf_pipeline, X_eval, y_eval, threshold=0.1)
+
     
-    print("\nEvaluation Results for the baseline model")
-    evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=0.1)
-    best_prameters = {'C': 1.0, 'gamma': 0.01, 'kernel': 'rbf'}
-    best_model = SVC(**best_prameters)
-    print("\nTraining best model with RBF kernel")
-    best_model.fit(X_train, y_train, sample_weight=sample_weights_train)
-    # Evaluate the best model
-    print("\nEvaluation Results for the best model")
-    evaluate_model_with_threshold(best_model, X_eval, y_eval, threshold=0.1)
-    
-    #print auc-roc curve
-    y_scores = best_model.decision_function(X_eval)
+    # Plot AUC-ROC curve for the best model
+    y_scores = rbf_pipeline.decision_function(X_eval)
     fpr, tpr, thresholds = roc_curve(y_eval, y_scores)
     roc_auc = auc(fpr, tpr)
     plt.figure()
@@ -117,7 +120,7 @@ def main():
     plt.legend(loc="lower right")
     output_dir = "data/visualization"
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "roc_auc_curve_SVM_simple.png")
+    output_path = os.path.join(output_dir, "roc_auc_curve_SVM_optimized.png")
     plt.savefig(output_path)
     plt.close()
 
