@@ -5,11 +5,12 @@ from sklearn.model_selection import StratifiedKFold
 from joblib import dump
 import numpy as np
 from sklearn.metrics import roc_curve, auc
-import matplotlib.pyplot as plt
-import os
-from sklearn.kernel_approximation import RBFSampler
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+import time
+from sklearn.ensemble import BaggingClassifier
+from sklearn import datasets
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.svm import SVC
+
 
 def evaluate_model_with_threshold(model, X_eval, y_eval, threshold=0.1):
     """Evaluate model with an adjustable decision threshold."""
@@ -78,51 +79,29 @@ def cross_validate_model(model, X, y, cv, threshold=0.1):
     
     return avg_f1, avg_precision, avg_recall
 
-
 def main():
+ 
     # Load data
-    target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv", "data/contextual_features")
+    target_length = prepare_data.get_max_sequence_length("data/metadata/label_downsampled.csv", "data/downsampled_features")
     X_train, y_train, sample_weights_train, scaler = prepare_data.load_train_data(
-        target_length=target_length,
-        primary_feature_dir="data/contextual_features",
-        secondary_feature_dir="data/resampled_features"
+        label_info_path="data/metadata/train_downsample.csv",
+        primary_feature_dir="data/downsampled_features",
+        target_length=target_length
     )
     X_eval, y_eval = prepare_data.load_eval_data(
+        label_info_path="data/metadata/eval_downsample.csv",
+        primary_feature_dir="data/downsampled_features",
         target_length=target_length,
-        primary_feature_dir="data/contextual_features",
         scaler=scaler
     )
-
-    # Optimize: Standardize data and approximate kernel
-    rbf_pipeline = Pipeline([
-        ('scaler', StandardScaler()),  # Standardize features
-        ('rbf_approx', RBFSampler(gamma=0.01, n_components=500)),  # Approximate RBF kernel
-        ('svm', SVC(kernel='linear', C=1.0, class_weight='balanced'))  # Linear SVM on transformed features
-    ])
-
-    print("\nTraining model with RBF kernel approximation and linear SVM")
-    rbf_pipeline.fit(X_train, y_train)
-
-    print("\nEvaluation Results for the RBF kernel approximation model")
-    evaluate_model_with_threshold(rbf_pipeline, X_eval, y_eval, threshold=0.1)
-
+    n_estimators = 10
+    baseline_model = OneVsRestClassifier(BaggingClassifier(SVC(kernel='linear', probability=True, class_weight='balanced'), max_samples=1.0 / n_estimators, n_estimators=n_estimators))
+    baseline_model.fit(X_train, y_train)
+    print("\nTraining Data Results for the baseline model")
+    evaluate_model_with_threshold(baseline_model, X_train, y_train, threshold=0.1)
     
-    # Plot AUC-ROC curve for the best model
-    y_scores = rbf_pipeline.decision_function(X_eval)
-    fpr, tpr, thresholds = roc_curve(y_eval, y_scores)
-    roc_auc = auc(fpr, tpr)
-    plt.figure()
-    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
-    plt.plot([0, 1], [0, 1], color='gray', lw=2, linestyle='--', label='Random Guess')
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic (ROC) Curve')
-    plt.legend(loc="lower right")
-    output_dir = "data/visualization"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "roc_auc_curve_SVM_optimized.png")
-    plt.savefig(output_path)
-    plt.close()
-
+    print("\nEvaluation Results for the baseline model")
+    evaluate_model_with_threshold(baseline_model, X_eval, y_eval, threshold=0.1)
+ 
 if __name__ == "__main__":
     main()
