@@ -124,24 +124,24 @@ TEST_DATA_PATH="data/metadata/test_context.csv"
 
 
 
-# echo "Training Random Forest model"
+echo "Training Random Forest model"
 
-# python src/simple_model_train_and_eval/RF_train_and_evaluate.py \
-#     --train_csv_path $RESAMPLED_TRAIN_PATH \
-#     --eval_csv_path $EVAL_DATA_PATH\
-#     --test_csv_path $TEST_DATA_PATH \
-#     # --epochs $EPOCHS \
-#     # --batch_size $BATCH_SIZE \
-#     # --config_path $EXPERIMENT_CONFIG_PATH \
-
-echo "Training Support Vector Machine model"
-python src/simple_model_train_and_eval/SVM_train_and_evaluate.py \
+python src/simple_model_train_and_eval/RF_train_and_evaluate.py \
     --train_csv_path $RESAMPLED_TRAIN_PATH \
-    --eval_csv_path $EVAL_DATA_PATH \
+    --eval_csv_path $EVAL_DATA_PATH\
     --test_csv_path $TEST_DATA_PATH \
     # --epochs $EPOCHS \
     # --batch_size $BATCH_SIZE \
     # --config_path $EXPERIMENT_CONFIG_PATH \
+
+# echo "Training Support Vector Machine model"
+# python src/simple_model_train_and_eval/SVM_train_and_evaluate.py \
+#     --train_csv_path $RESAMPLED_TRAIN_PATH \
+#     --eval_csv_path $EVAL_DATA_PATH \
+#     --test_csv_path $TEST_DATA_PATH \
+#     # --epochs $EPOCHS \
+#     # --batch_size $BATCH_SIZE \
+#     # --config_path $EXPERIMENT_CONFIG_PATH \
 
 
 echo "Pipeline execution completed."
