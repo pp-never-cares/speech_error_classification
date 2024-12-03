@@ -1,6 +1,6 @@
 import prepare_data
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_validate, KFold
 from joblib import dump
 from sklearn.metrics import roc_curve, auc
