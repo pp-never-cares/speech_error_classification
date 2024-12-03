@@ -1,3 +1,11 @@
+'''
+transcript_annotator.py
+
+TranscriptAnnotator class for annotating the transcript with predicted and actual errors.
+
+It creates a JSON file with the predicted and actual errors and annotated transcript.
+'''
+
 import os
 import json
 import re

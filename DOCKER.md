@@ -84,9 +84,14 @@ Train the model using an experiment configuration file (e.g., `experiments/exp_l
 python3 src/training/main.py experiments/exp_loss_0_binary_crossentropy.cfg
 ```
 
-Evaluate the model using an experiment configuration file (e.g., `experiments/exp_loss_0_binary_crossentropy.cfg`):
+Evaluate the model (e.g., `models\cluster-24-11-29\closs_cntrv1.00.keras`) against a specific audio file (e.g., `data\audio\ac003_2006-09-24.wav`):
 ```
-bash evaluate.sh experiments/exp_loss_0_binary_crossentropy.cfg
+bash scripts/evaluate_utterance.sh models/cluster-24-11-29/closs_cntrv1.00.keras data/audio/ac003_2006-09-24.wav
+```
+
+Read tensorboard logs (e.g., `logs/cluster-24-11-29/`):
+```
+python3 src/evaluation/read_tensorboard.py logs/cluster-24-11-29/
 ```
 
 5. Clear cache if needed:
