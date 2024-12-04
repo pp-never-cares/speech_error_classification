@@ -42,10 +42,6 @@ EVAL_DATA_PATH="data/metadata/eval_downsample.csv"
 TEST_DATA_PATH="data/metadata/test_downsample.csv"
 
 
-
-
-
-
 # Convert mp3 to wav
 echo "Converting mp3 to wav"
 python src/audio_processing/convert_mp3_to_wav.py --audio_dir $AUDIO_DIR --output $AUDIO_DIR --sample_rate $SAMPLING_RATE
@@ -61,14 +57,15 @@ if [ ! -d $FEATURE_DIR ]; then
 fi
 python src/feature_extraction/generate_features.py --wav_list $WAVE_LIST --wav_dir $WAVE_DIR --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# Generate labels
+Generate labels
 echo "Generating labels"
 if [ ! -d $LABEL_DIR ]; then
     mkdir -p $LABEL_DIR
 fi
 python src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# Add contextual features and labels
+
+Add contextual features and labels
 echo "Adding contextual features and labels"
 if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
     mkdir -p $CONTEXTUAL_FEATURE_DIR
@@ -119,17 +116,6 @@ python src/downsample/LR_train_and_evaluate.py \
     # --config_path $EXPERIMENT_CONFIG_PATH \
     # --output_model_path models/best_logistic_model
 
-echo "Training Support Vector Machine model"
-python src/downsample/SVM_train_and_evaluate.py \
-    --train_csv_path $TRAIN_DATA_PATH \
-    --eval_csv_path $EVAL_DATA_PATH \
-    --test_csv_path $TEST_DATA_PATH \
-    # --epochs $EPOCHS \
-    # --batch_size $BATCH_SIZE \
-    # --config_path $EXPERIMENT_CONFIG_PATH \
-    # --output_model_path models/best_rf_model.joblib
-
-
 echo "Training Random Forest model"
 python src/downsample/RF_train_and_evaluate.py \
     --train_csv_path $TRAIN_DATA_PATH \
@@ -141,6 +127,15 @@ python src/downsample/RF_train_and_evaluate.py \
     # --output_model_path models/best_svm_model.joblib
 
 
+echo "Training Support Vector Machine model"
+python src/downsample/SVM_train_and_evaluate.py \
+    --train_csv_path $TRAIN_DATA_PATH \
+    --eval_csv_path $EVAL_DATA_PATH \
+    --test_csv_path $TEST_DATA_PATH \
+    # --epochs $EPOCHS \
+    # --batch_size $BATCH_SIZE \
+    # --config_path $EXPERIMENT_CONFIG_PATH \
+    # --output_model_path models/best_rf_model.joblib
 
 echo "Pipeline execution completed."
 

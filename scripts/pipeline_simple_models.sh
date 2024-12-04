@@ -46,29 +46,29 @@ TEST_DATA_PATH="data/metadata/test_context.csv"
 
 
 
-# # Convert mp3 to wav
-# echo "Converting mp3 to wav"
-# python src/audio_processing/convert_mp3_to_wav.py --audio_dir $AUDIO_DIR --output $AUDIO_DIR --sample_rate $SAMPLING_RATE
+# Convert mp3 to wav
+echo "Converting mp3 to wav"
+python src/audio_processing/convert_mp3_to_wav.py --audio_dir $AUDIO_DIR --output $AUDIO_DIR --sample_rate $SAMPLING_RATE
 
-# # Generate audio list
-# echo "Generating audio list"
-# python src/audio_processing/generate_audio_list.py --audio_dir $AUDIO_DIR --output $LIST_OUTPUT
+# Generate audio list
+echo "Generating audio list"
+python src/audio_processing/generate_audio_list.py --audio_dir $AUDIO_DIR --output $LIST_OUTPUT
 
-# # Generate features
-# echo "Extracting features"
-# if [ ! -d $FEATURE_DIR ]; then
-#     mkdir -p $FEATURE_DIR
-# fi
-# python src/feature_extraction/generate_features.py --wav_list $WAVE_LIST --wav_dir $WAVE_DIR --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
+# Generate features
+echo "Extracting features"
+if [ ! -d $FEATURE_DIR ]; then
+    mkdir -p $FEATURE_DIR
+fi
+python src/feature_extraction/generate_features.py --wav_list $WAVE_LIST --wav_dir $WAVE_DIR --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# # Generate labels
-# echo "Generating labels"
-# if [ ! -d $LABEL_DIR ]; then
-#     mkdir -p $LABEL_DIR
-# fi
-# python src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
+# Generate labels
+echo "Generating labels"
+if [ ! -d $LABEL_DIR ]; then
+    mkdir -p $LABEL_DIR
+fi
+python src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# Add contextual features and labels
+Add contextual features and labels
 echo "Adding contextual features and labels"
 if [ ! -d $CONTEXTUAL_FEATURE_DIR ]; then
     mkdir -p $CONTEXTUAL_FEATURE_DIR
@@ -87,7 +87,7 @@ python src/feature_extraction/add_contextual_features.py \
 
 
 
-# Split data into train, eval, and test sets
+Split data into train, eval, and test sets
 echo "Splitting added contextual feature data into train, eval, and test sets"
 python src/feature_extraction/split_contextual_data.py --label_info_path $LABEL_INFO_CONTEXT_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
@@ -122,15 +122,6 @@ python src/simple_model_train_and_eval/LR_train_and_evaluate.py \
     # --config_path $EXPERIMENT_CONFIG_PATH \
     # --output_model_path models/best_logistic_model
 
-echo "Training Support Vector Machine model"
-python src/simple_model_train_and_eval/SVM_train_and_evaluate.py \
-    --train_csv_path $RESAMPLED_TRAIN_PATH \
-    --eval_csv_path $EVAL_DATA_PATH \
-    --test_csv_path $TEST_DATA_PATH \
-    # --epochs $EPOCHS \
-    # --batch_size $BATCH_SIZE \
-    # --config_path $EXPERIMENT_CONFIG_PATH \
-
 
 
 echo "Training Random Forest model"
@@ -143,6 +134,14 @@ python src/simple_model_train_and_eval/RF_train_and_evaluate.py \
     # --batch_size $BATCH_SIZE \
     # --config_path $EXPERIMENT_CONFIG_PATH \
 
+echo "Training Support Vector Machine model"
+python src/simple_model_train_and_eval/SVM_train_and_evaluate.py \
+    --train_csv_path $RESAMPLED_TRAIN_PATH \
+    --eval_csv_path $EVAL_DATA_PATH \
+    --test_csv_path $TEST_DATA_PATH \
+    # --epochs $EPOCHS \
+    # --batch_size $BATCH_SIZE \
+    # --config_path $EXPERIMENT_CONFIG_PATH \
 
 
 echo "Pipeline execution completed."

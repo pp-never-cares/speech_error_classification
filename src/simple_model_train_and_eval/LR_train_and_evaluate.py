@@ -4,6 +4,8 @@ from sklearn.metrics import precision_score, recall_score, f1_score, classificat
 from sklearn.model_selection import cross_val_score, cross_validate, KFold
 from joblib import dump
 from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+import os
 
 def evaluate_cross_validation(model, X, y, cv_folds):
     """
@@ -35,8 +37,7 @@ def evaluate_cross_validation(model, X, y, cv_folds):
 
 def main():
     # Calculate target_length from training data
-    target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv",
-                                                         "data/contextual_features")
+    target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv", "data/contextual_features")
     print(f"Using target length of {target_length} based on maximum sequence length in training data.")
 
     # Load training data
@@ -65,7 +66,7 @@ def main():
     model.fit(X_train, y_train, sample_weight=sample_weights_train)
 
     # Evaluate on the evaluation set using a customizable threshold
-    custom_threshold = 0.5  # You can change this value to your desired threshold
+    custom_threshold = 0.1  # You can change this value to your desired threshold
     print(
         f"\nEvaluation Results for the Logistic Regression Model with Custom Threshold (Threshold = {custom_threshold}):")
 
@@ -79,22 +80,30 @@ def main():
     print(classification_report(y_eval, y_eval_pred_custom))
 
     # Save the trained model
-    dump(model, 'models/baseline_model/best_logistic_model.joblib')
+    
     print("\nModel saved as best_logistic_model.joblib")
+    
+    # draw ROC curve and save to data/visualization
+    
+    fpr, tpr, thresholds = roc_curve(y_eval, y_eval_prob)
+    roc_auc = auc(fpr, tpr)
 
-    # Generate and plot ROC curve
-    #fpr, tpr, _ = roc_curve(y_eval, y_eval_prob)
-    #roc_auc = auc(fpr, tpr)
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='gray', lw=2, linestyle='--', label='Random Guess')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+    plt.legend(loc="lower right")
 
-    #plt.figure()
-    #plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-    #plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    #plt.xlabel('False Positive Rate')
-    #plt.ylabel('True Positive Rate')
-    #plt.title('Receiver Operating Characteristic (ROC) Curve')
-    #plt.legend(loc='lower right')
-    #plt.show()
-
+    # Save the plot
+    output_dir = "data/visualization"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "roc_auc_curve_LR_simple.png")
+    plt.savefig(output_path)
+    plt.close()
+    dump(model, 'models/baseline_model/best_logistic_model.joblib')
 
 if __name__ == "__main__":
     main()
