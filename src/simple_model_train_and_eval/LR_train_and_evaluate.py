@@ -37,8 +37,7 @@ def evaluate_cross_validation(model, X, y, cv_folds):
 
 def main():
     # Calculate target_length from training data
-    target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv",
-                                                         "data/contextual_features")
+    target_length = prepare_data.get_max_sequence_length("data/metadata/label_train_resampled.csv", "data/contextual_features")
     print(f"Using target length of {target_length} based on maximum sequence length in training data.")
 
     # Load training data

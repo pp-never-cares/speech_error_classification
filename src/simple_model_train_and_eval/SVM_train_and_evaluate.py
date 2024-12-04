@@ -31,54 +31,6 @@ def evaluate_model_with_threshold(model, X_eval, y_eval, threshold=0.1):
     print(conf_matrix)
     return accuracy, precision, recall, f1, auc, conf_matrix
 
-def cross_validate_model(model, X, y, cv, threshold=0.1):
-    """Perform cross-validation manually and return the average scores for F1, precision, and recall."""
-    f1_scores = []
-    precision_scores = []
-    recall_scores = []
-    fold_results = []  # To store results per fold
-
-    for fold_idx, (train_index, test_index) in enumerate(cv.split(X, y), 1):
-        X_train, X_test = X[train_index], X[test_index]
-        y_train, y_test = y[train_index], y[test_index]
-        
-        # Fit model on training fold
-        model.fit(X_train, y_train)
-        
-        # Get predictions with threshold on test fold
-        y_scores = model.decision_function(X_test)
-        y_pred = (y_scores > threshold).astype(int)
-        
-        # Calculate metrics on the test fold
-        f1 = f1_score(y_test, y_pred, average='binary')
-        precision = precision_score(y_test, y_pred, average='binary')
-        recall = recall_score(y_test, y_pred, average='binary')
-        
-        # Append metrics to lists
-        f1_scores.append(f1)
-        precision_scores.append(precision)
-        recall_scores.append(recall)
-
-        # Print fold results
-        print(f"Fold {fold_idx}: F1 Score={f1}, Precision={precision}, Recall={recall}")
-        
-        # Store each fold's metrics in a dict
-        fold_results.append({
-            "F1 Score": f1,
-            "Precision": precision,
-            "Recall": recall
-        })
-    
-    # Print all fold results (optional)
-    print("All fold results:", fold_results)
-    
-    # Calculate and return the average of each metric across folds
-    avg_f1 = np.mean(f1_scores)
-    avg_precision = np.mean(precision_scores)
-    avg_recall = np.mean(recall_scores)
-    
-    return avg_f1, avg_precision, avg_recall
-
 def main():
  
     # Load data
@@ -96,6 +48,7 @@ def main():
     )
     n_estimators = 10
     baseline_model = OneVsRestClassifier(BaggingClassifier(SVC(kernel='linear', probability=True, class_weight='balanced'), max_samples=1.0 / n_estimators, n_estimators=n_estimators))
+    print("This SVM model is trained with a Bagging Classifier, similar to the downsampled model. Please refer to the downsampled model for more details.")
     baseline_model.fit(X_train, y_train)
     print("\nTraining Data Results for the baseline model")
     evaluate_model_with_threshold(baseline_model, X_train, y_train, threshold=0.1)

@@ -48,11 +48,7 @@ For MacOS user, it should be:
 
 `module load singularity`
 
-For specific requirement of singularity, choose specific version of singularity:
-
-'module avail singularity'
-
-2. Pull the Docker image from Docker Hub using the following command:
+1. Pull the Docker image from Docker Hub using the following command:
 
 `singularity pull speech-error-ml.sif docker://macarious/speech-error-ml`
 
@@ -76,7 +72,7 @@ This pulls the Docker image and converts it to a Singularity image `speech-error
 
     And choose the newest version( updated to 3.10.3 at Nov 2023 ):
 
-`module unvail singularity/3.10.3`
+`module load singularity/3.10.3`
 
 3. Execute the image using the following command:
 
@@ -93,7 +89,7 @@ bash scripts/split_data.sh
 python3 src/training/main.py experiments/exp_loss_0_binary_crossentropy.cfg
 ```
 
-    For simple models, sandbox model running:
+    For simple baseline models, sandbox model running:
 
 ```
 bash scripts/pipeline_downsample.sh
