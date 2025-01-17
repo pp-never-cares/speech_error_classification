@@ -135,12 +135,12 @@ Stores model predictions on the test set (`.json`).
 Shell scripts for data preparation, feature generation, and model training:
 
 - `create_contrive_set.sh`: Creates a contrived dataset with only utterances containing speech errors.
-- `evaluate_utterance.sh`: Evaluates the model on a specific audio file.
+- `evaluate_utterance.sh`: __Evaluates the model on a specific audio file.__
 - `generate_features.sh`: Extracts features from audio files.
 - `generate_labels.sh`: Generates labels from metadata.
 - `process_audio_files.sh`: Converts audio files from `.mp3` to `.wav`.
 - `split_data.sh`: Splits data into training, validation, and test sets.
-- `train_model.sh`: Trains the model using specified configurations.
+- `train_model.sh`: __Trains the model using specified configurations.__
 
 #### `src/`
 
@@ -157,7 +157,7 @@ Source code organized into subfolders:
 - `evaluate_utterance.py`: Evaluates the model on a specific audio file.
 - `label_comparison.py`: Compares predicted labels with ground truth and calculates evaluation metrics.
 - `model_prediction.py`: Generates predictions for audio files using the trained model.
-- `read_tensorboard.py`: Reads TensorBoard logs for analysis.
+- `read_tensorboard.py`: __Reads TensorBoard logs for analysis.__
 - `transcript_annotation.py`: Annotates WhisperX transcript files with predicted speech errors.
 
 ##### `feature_extraction/`
@@ -181,7 +181,7 @@ Source code organized into subfolders:
 - `custom_f1_score.py`: Implements a custom F1 score metric.
 - `custom_frame_level_loss.py`: Implements a custom loss function for frame-level predictions.
 - `data_utils.py`: Utility functions for loading and processing data from `.csv` and `.npy` files.
-- `main.py`: Main script for training the model.
+- `main.py`: __Main script for training the model.__
 - `model_trainer.py`: Implements a class for training the model with k-fold cross-validation.
 - `model_utils.py`: Utility functions for building and training the Keras model.
 - `parse_config.py`: Utility functions for parsing experiment configuration files.
