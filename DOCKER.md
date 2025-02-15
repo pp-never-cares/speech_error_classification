@@ -24,6 +24,10 @@ project/
 
 `docker build -t speech-error-ml .`
 
+For MacOS user, it should be:
+
+`docker buildx build --platform linux/amd64 -t speech-error-ml .`
+
 ## Steps to Upload the Docker Image to Docker Hub
 
 1. Log in to Docker Hub using the following command:
@@ -44,9 +48,9 @@ project/
 
 `module load singularity`
 
-2. Pull the Docker image from Docker Hub using the following command:
+1. Pull the Docker image from Docker Hub using the following command:
 
-`singularity pull docker://macarious/speech-error-ml`
+`singularity pull speech-error-ml.sif docker://macarious/speech-error-ml`
 
 This pulls the Docker image and converts it to a Singularity image `speech-error-ml_latest.sif`.
 
@@ -62,9 +66,19 @@ This pulls the Docker image and converts it to a Singularity image `speech-error
 
 `module load singularity`
 
+    For a safer process, check all versions of Singularity file:
+
+`module unvail singularity`
+
+    And choose the newest version( updated to 3.10.3 at Nov 2023 ):
+
+`module load singularity/3.10.3`
+
 3. Execute the image using the following command:
 
 `singularity run --nv --bind /work/van-speech-nlp/hui.mac/sfused/data:/app/data,/work/van-speech-nlp/hui.mac/sfused/logs:/app/logs,/work/van-speech-nlp/hui.mac/sfused/experiments:/app/experiments,/work/van-speech-nlp/hui.mac/sfused/models:/app/models,/work/van-speech-nlp/hui.mac/sfused/checkpoints:/app/checkpoints --pwd /app /work/van-speech-nlp/hui.mac/sfused/speech-error-ml_latest.sif /bin/bash`
+
+    "--bind" allows access to files under /src or /scripts too.
 
 4. Run the Python script inside the container:
 
@@ -92,6 +106,18 @@ bash scripts/evaluate_utterance.sh models/cluster-24-11-29/closs_cntrv1.00.keras
 Read tensorboard logs (e.g., `logs/cluster-24-11-29/`):
 ```
 python3 src/evaluation/read_tensorboard.py logs/cluster-24-11-29/
+
+
+For simple baseline models, sandbox model running:
+
+```
+bash scripts/pipeline_downsample.sh
+```
+
+For simple models, running on resampled training dataset and un-resampled eval dataset:
+
+```
+bash scripts/pipeline_simple_models.sh
 ```
 
 5. Clear cache if needed:
