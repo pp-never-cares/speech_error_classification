@@ -82,20 +82,39 @@ This pulls the Docker image and converts it to a Singularity image `speech-error
 
 4. Run the Python script inside the container:
 
+Convert audio files from .mp3 to .wav, and generate a list of all audio files:
 ```
 bash scripts/process_audio_files.sh
+```
+
+Generate features, labels and split data using the list of audio files generated in the previous step:
+```
 bash scripts/generate_features.sh
 bash scripts/split_data.sh
+```
+
+Train the model using an experiment configuration file (e.g., `experiments/exp_loss_0_binary_crossentropy.cfg`):
+```
 python3 src/training/main.py experiments/exp_loss_0_binary_crossentropy.cfg
 ```
 
-    For simple baseline models, sandbox model running:
+Evaluate the model (e.g., `models\cluster-24-11-29\closs_cntrv1.00.keras`) against a specific audio file (e.g., `data\audio\ac003_2006-09-24.wav`):
+```
+bash scripts/evaluate_utterance.sh models/cluster-24-11-29/closs_cntrv1.00.keras data/audio/ac003_2006-09-24.wav
+```
+
+Read tensorboard logs (e.g., `logs/cluster-24-11-29/`):
+```
+python3 src/evaluation/read_tensorboard.py logs/cluster-24-11-29/
+
+
+For simple baseline models, sandbox model running:
 
 ```
 bash scripts/pipeline_downsample.sh
 ```
 
-    For simple models, running on resampled training dataset and un-resampled eval dataset:
+For simple models, running on resampled training dataset and un-resampled eval dataset:
 
 ```
 bash scripts/pipeline_simple_models.sh
@@ -110,4 +129,6 @@ rm -rf /home/hui.mac/.singularity/cache
 
 6. Exit the container:
 
-`exit`
+```
+exit
+```

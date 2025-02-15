@@ -20,8 +20,8 @@ data/whipserX/*.csv
 data/whisperX_word/*.json
 
 # logs
-logs/*
-!logs/.gitkeep
+# logs/*
+# !logs/.gitkeep
 
 # predictions
 predictions/*

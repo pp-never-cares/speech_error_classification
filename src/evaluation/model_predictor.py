@@ -1,3 +1,9 @@
+'''
+model_predictor.py
+
+ModelPredictor class for making predictions using a trained model on a specific audio file.
+'''
+
 import os
 import numpy as np
 import tensorflow as tf
