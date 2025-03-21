@@ -174,13 +174,14 @@ class FeatureExtractor():
         """
         for sub_list_index, file in enumerate(list_audio_files):
             input_file = os.path.join(wav_dir, file)
-            output_file = os.path.join(feature_dir, file)
+            base_name = os.path.basename(file)
+            output_file = os.path.join(feature_dir, base_name)
             output_file_name_prefix = os.path.basename(
                 output_file).split('.')[0]
             print(
                 f"Extracting features: {input_file}")
 
-            transcript_file_name = file.replace('.wav', '.csv')
+            transcript_file_name = base_name.replace(".wav", ".csv")
             transcript_file = self._find_transcript_file(
                 transcript_dir, transcript_file_name)
             if not transcript_file:
@@ -241,8 +242,10 @@ class FeatureExtractor():
         Returns:
         - str: The path to the transcript file.
         """
-        for root, dirs, files in os.walk(transcript_dir):
+        for root, dirnames, files in os.walk(transcript_dir):
+            dirnames[:] = [d for d in dirnames if d.lower() != 'temp']
             if transcript_file_name in files:
+                
                 return os.path.join(root, transcript_file_name)
         return None
 

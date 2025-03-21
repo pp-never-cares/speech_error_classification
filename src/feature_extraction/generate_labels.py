@@ -5,13 +5,13 @@ This script is used to generate labels for the audio features.
 
 Usage:
     python generate_labels.py --feature_config <feature_config> --annotations_path <annotations_path> --transcript_dir <transcript_dir> --feature_dir <feature_dir> --label_dir <label_dir> --label_info_dir <label_info_dir> --n_process <n_process> --multi_class
-    
     - feature_config (str): Path to the configuration file.
     - annotations_path (str): Path to the csv file containing the annotations.
     - transcript_dir (str): Directory containing the transcript files.
     - feature_dir (str): Directory containing the audio features (.npy files).
     - label_dir (str): Directory where the labels will be saved.
     - label_info_dir (str): Directory where the labels information will be saved.
+    - failure_log_dir (str): Path to the log file where errors will be logged.
     - n_process (int): Number of processes to use for generating the labels.
     - multi_class (bool): Whether to use multi-class labels. If False, one class (speech error or non-speech error) is used.
     
@@ -42,6 +42,7 @@ class LabelEncoder:
     - feature_dir (str): Directory containing the audio features (.npy files).
     - label_dir (str): Directory where the labels will be saved.
     - label_info_dir (str): Directory where the label information will be saved.
+    - failure_log_dir (str): Path to the log file where errors will be logged.
     - n_process (int): Number of processes to use for generating the labels.
     - labels_to_keep (List[str]): The list of labels to keep. Ignoring all other labels.
     - multi_class (bool): Whether to use multi-class labels. If False, one class (speech error or non-speech error) is used.
@@ -56,7 +57,7 @@ class LabelEncoder:
     - label_info (List[Dict]): Information about the labels for each feature file.
     """
 
-    def __init__(self, config_path: str, annotations_path: str, transcript_dir: str, feature_dir: str, label_dir: str, label_info_dir: str, n_process: int, labels_to_keep: List[str], multi_class: bool = False) -> None:
+    def __init__(self, config_path: str, annotations_path: str, transcript_dir: str, feature_dir: str, label_dir: str, label_info_dir: str, failure_log_dir: str, n_process: int, labels_to_keep: List[str], multi_class: bool = False) -> None:
         """
         Initialize the LabelEncoder.
         """
@@ -66,6 +67,7 @@ class LabelEncoder:
         self.feature_dir = feature_dir
         self.label_dir = label_dir
         self.label_info_dir = label_info_dir
+        self.failure_log_dir = failure_log_dir
         self.n_process = n_process
         self.labels_to_keep = labels_to_keep
         self.multi_class = multi_class
@@ -230,11 +232,8 @@ class LabelEncoder:
                     file_list.append(feature_file)
 
             for feature_file in file_list:
-                try:
-                    feature_start_time, feature_end_time = self.transcripts_dict[feature_file]
-                except KeyError:
-                    print(f"Transcript not found for {feature_file}")
-                    continue
+                feature_start_time, feature_end_time = self.transcripts_dict[feature_file]
+
                 # Check if the label falls entirely within the segment
                 if start_time >= feature_start_time and end_time <= feature_end_time:
                     label_start_time = start_time
@@ -277,7 +276,7 @@ class LabelEncoder:
         label_info_df.to_csv(label_info_path, index=False)
         print(f"    Label information saved to {label_info_path}")
 
-    def _generate_labels_for_single_list(self, list_feature_files: List[str], index: int, file_per_process: int, feature_file_length: int) -> List[Tuple[str, float, float, int]]:
+    def _generate_labels_for_single_list(self, list_feature_files: List[str], index: int, file_per_process: int, feature_file_length: int, failure_log_dir:str) -> List[Tuple[str, float, float, int]]:
         """
         Generate labels for a list of audio feature files.
 
@@ -286,6 +285,7 @@ class LabelEncoder:
         - index (int): The index of the process.
         - file_per_process (int): The number of files to process per process.
         - feature_file_length (int): The total number of feature files to process.
+        - failure_log_dir:str (str): Path to the log file where errors will be logged.
 
         Returns:
         - List[Tuple[str, float, float, int]]: List of tuples containing feature file, start time, end time, and label count.
@@ -314,8 +314,18 @@ class LabelEncoder:
                     end_time = item['end_time']
                     label_file = item['label_file']
                     break
-
-            feature = np.load(feature_file)
+            try:
+                feature = np.load(feature_file)
+            except EOFError as e:
+                with open(failure_log_dir, "a") as log_file:
+                    log_file.write(f"Error loading {feature_file}: {e}\n")
+                print(f"Logged: Error loading {feature_file}: {e}")
+                continue
+            if feature.size == 0:
+                with open(failure_log_dir, "a") as log_file:
+                    log_file.write(f"{feature_file} is empty.\n")
+                print(f"Logged: {feature_file} is empty.")
+                
             feature_length = feature.shape[0]
 
             # Validate length of feature array
@@ -371,12 +381,12 @@ class LabelEncoder:
             if start_index < feature_file_length and start_index < end_index:
                 sub_list = self.label_info[start_index:end_index]
                 process = multiprocessing.Process(target=self._generate_labels_for_single_list, args=(
-                    sub_list, index, file_per_process, feature_file_length))
+                    sub_list, index, file_per_process, feature_file_length, failure_log_dir))
 
                 process.start()
 
 
-def generate_label(config_path: str, annotations_path: str, transcript_dir: str, feature_dir: str, label_dir: str, label_info_dir: str, n_process: int, labels_to_keep: List[str], multi_class: bool) -> None:
+def generate_label(config_path: str, annotations_path: str, transcript_dir: str, feature_dir: str, label_dir: str, label_info_dir: str, failure_log_dir: str, n_process: int, labels_to_keep: List[str], multi_class: bool) -> None:
     """
     Generate labels for the audio features.
 
@@ -387,12 +397,13 @@ def generate_label(config_path: str, annotations_path: str, transcript_dir: str,
     - feature_dir (str): Directory containing the audio features (.npy files) generated by the feature extraction script.
     - label_dir (str): Directory where the labels will be saved.
     - label_info_dir (str): Directory where the labels information will be saved.
+    - failure_log_dir (str): Path to the log file where errors will be logged.
     - n_process (int): Number of processes to use for feature extraction.
     - labels_to_keep (List[str]): The list of labels to keep. Ignoring all other labels.
     - multi_class (bool): Whether to use multi-class labels. If False, one class (speech error or non-speech error) is used.
     """
     label_encoder = LabelEncoder(config_path, annotations_path, transcript_dir,
-                                 feature_dir, label_dir, label_info_dir, n_process, labels_to_keep, multi_class)
+                                 feature_dir, label_dir, label_info_dir, failure_log_dir, n_process, labels_to_keep, multi_class)
     label_encoder.generate_all_labels_multiprocessing()
 
 
@@ -411,6 +422,8 @@ if __name__ == '__main__':
                         help='Directory where the labels will be saved', required=True)
     parser.add_argument('--label_info_dir', type=str,
                         help='Directory where the labels information will be saved', required=True)
+    parser.add_argument('--failure_log_dir', type=str,
+                        help='Path to the log file where errors will be logged', required=True)
     parser.add_argument('--n_process', type=int, dest='n_process',
                         help='Number of processes to use for feature extraction.', default=4)
     parser.add_argument('--multi_class', action='store_true',
@@ -424,6 +437,7 @@ if __name__ == '__main__':
     feature_dir = args.feature_dir
     label_dir = args.label_dir
     label_info_dir = args.label_info_dir
+    failure_log_dir = args.failure_log_dir
     n_process = args.n_process
     multi_class = args.multi_class
 
@@ -438,4 +452,4 @@ if __name__ == '__main__':
             raise FileNotFoundError(f'Path "{path}" not found.')
 
     generate_label(config_path, annotations_path, transcript_dir, feature_dir,
-                   label_dir, label_info_dir, n_process, labels_to_keep, multi_class)
+                   label_dir, label_info_dir, failure_log_dir, n_process, labels_to_keep, multi_class)
