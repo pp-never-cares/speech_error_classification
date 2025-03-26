@@ -243,7 +243,7 @@ class FeatureExtractor():
         - str: The path to the transcript file.
         """
         for root, dirnames, files in os.walk(transcript_dir):
-            dirnames[:] = [d for d in dirnames if d.lower() != 'temp']
+            dirnames[:] = [d for d in dirnames if d.lower() != 'superseded']
             if transcript_file_name in files:
                 
                 return os.path.join(root, transcript_file_name)

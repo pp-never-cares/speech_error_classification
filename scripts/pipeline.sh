@@ -21,6 +21,12 @@ EPOCHS=50
 BATCH_SIZE=64
 FAILURE_LOG_DIR="${LABEL_INFO_DIR}/failure_log.log"
 
+
+CSV_DIR="data/metadata/"
+OUTPUT_DIR="data/metadata/"
+CONTRIVE_RATIO=0.5
+SEED=42
+
 # Convert mp3 to wav
 echo "Converting mp3 to wav"
 python src/audio_processing/convert_mp3_to_wav.py --audio_dir $AUDIO_DIR --output $AUDIO_DIR --sample_rate $SAMPLING_RATE
@@ -48,9 +54,45 @@ fi
 python3 src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --failure_log_dir $FAILURE_LOG_DIR --n_process $PROCESS_NUM
 
 # # Split data
-# echo "Splitting data into train, eval, and test sets"
-# python3 src/feature_extraction/split_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+echo "Splitting data into train, eval, and test sets"
+python3 src/feature_extraction/split_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
-# # Train model
-# # echo "Training model"
-# # python3 src/training/main.py --train_csv_path $TRAIN_CSV_PATH --eval_csv_path $EVAL_CSV_PATH --test_csv_path $TEST_CSV_PATH --epochs $EPOCHS --batch_size $BATCH_SIZE
+# Train model
+echo "Training baseline model with baseline setting"
+python3 src/training/main.py experiments/baseline.cfg
+
+
+# Create output directory if it doesn't exist
+if [ ! -d "$(dirname "$OUTPUT_DIR")" ]; then
+    mkdir -p "$(dirname "OUTPUT_DIR")"
+fi
+
+echo "Creating contrived datasets with balanced event and non-event samples..."
+
+python src/feature_extraction/create_contrive_set.py \
+    --csv_dir "$CSV_DIR" \
+    --output_dir "$OUTPUT_DIR" \
+    --ratio "$CONTRIVE_RATIO" \
+    --seed "$SEED"
+
+if [ $? -ne 0 ]; then
+    echo "Error: create_contrive_set.py failed."
+    exit 1
+fi
+
+echo "Contrived datasets created successfully."
+echo "Contrived data is located in: $OUTPUT_DIR"
+
+# train model with contrived data. 
+
+# Train model
+echo "Training baseline model with contrived setting"
+python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
+
+
+#Train model
+echo "Training baseline model with exp-loss-0 setting"
+python3 src/training/main.py experiments/exp_loss_0_binary_crossentropy.cfg
+
+
+
