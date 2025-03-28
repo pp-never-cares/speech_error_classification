@@ -27,63 +27,63 @@ OUTPUT_DIR="data/metadata/"
 CONTRIVE_RATIO=0.5
 SEED=42
 
-# Convert mp3 to wav
-echo "Converting mp3 to wav"
-python src/audio_processing/convert_mp3_to_wav.py --audio_dir $AUDIO_DIR --output $AUDIO_DIR --sample_rate $SAMPLING_RATE
+# # Convert mp3 to wav
+# echo "Converting mp3 to wav"
+# python src/audio_processing/convert_mp3_to_wav.py --audio_dir $AUDIO_DIR --output $AUDIO_DIR --sample_rate $SAMPLING_RATE
 
-# Generate audio list
-echo "Generating audio list"
-python src/audio_processing/generate_audio_list.py --audio_dir $AUDIO_DIR --output $LIST_OUTPUT
+# # Generate audio list
+# echo "Generating audio list"
+# python src/audio_processing/generate_audio_list.py --audio_dir $AUDIO_DIR --output $LIST_OUTPUT
 
-# Generate features
-echo "Extracting features"
-if [ ! -d $FEATURE_DIR ]; then
-    mkdir -p $FEATURE_DIR
-fi
-python3 src/feature_extraction/generate_features.py --wav_list $WAVE_LIST --wav_dir $WAVE_DIR --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
+# # Generate features
+# echo "Extracting features"
+# if [ ! -d $FEATURE_DIR ]; then
+#     mkdir -p $FEATURE_DIR
+# fi
+# python3 src/feature_extraction/generate_features.py --wav_list $WAVE_LIST --wav_dir $WAVE_DIR --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# Generate labels
-echo "Generating labels"
-if [ ! -d $LABEL_DIR ]; then
-    mkdir -p $LABEL_DIR
-fi
-if [ ! -f $FAILURE_LOG_DIR ]; then
-    touch $FAILURE_LOG_DIR
-    echo "Created empty log file at $FAILURE_LOG_DIR."
-fi
-python3 src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --failure_log_dir $FAILURE_LOG_DIR --n_process $PROCESS_NUM
+# # Generate labels
+# echo "Generating labels"
+# if [ ! -d $LABEL_DIR ]; then
+#     mkdir -p $LABEL_DIR
+# fi
+# if [ ! -f $FAILURE_LOG_DIR ]; then
+#     touch $FAILURE_LOG_DIR
+#     echo "Created empty log file at $FAILURE_LOG_DIR."
+# fi
+# python3 src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --failure_log_dir $FAILURE_LOG_DIR --n_process $PROCESS_NUM
 
-# # Split data
-echo "Splitting data into train, eval, and test sets"
-python3 src/feature_extraction/split_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+# # # Split data
+# echo "Splitting data into train, eval, and test sets"
+# python3 src/feature_extraction/split_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
-# Train model
-echo "Training baseline model with baseline setting"
-python3 src/training/main.py experiments/baseline.cfg
+# # Train model
+# echo "Training baseline model with baseline setting"
+# python3 src/training/main.py experiments/baseline.cfg
 
 
-# Create output directory if it doesn't exist
-if [ ! -d "$(dirname "$OUTPUT_DIR")" ]; then
-    mkdir -p "$(dirname "OUTPUT_DIR")"
-fi
+# # Create output directory if it doesn't exist
+# if [ ! -d "$(dirname "$OUTPUT_DIR")" ]; then
+#     mkdir -p "$(dirname "OUTPUT_DIR")"
+# fi
 
-echo "Creating contrived datasets with balanced event and non-event samples..."
+# echo "Creating contrived datasets with balanced event and non-event samples..."
 
-python src/feature_extraction/create_contrive_set.py \
-    --csv_dir "$CSV_DIR" \
-    --output_dir "$OUTPUT_DIR" \
-    --ratio "$CONTRIVE_RATIO" \
-    --seed "$SEED"
+# python src/feature_extraction/create_contrive_set.py \
+#     --csv_dir "$CSV_DIR" \
+#     --output_dir "$OUTPUT_DIR" \
+#     --ratio "$CONTRIVE_RATIO" \
+#     --seed "$SEED"
 
-if [ $? -ne 0 ]; then
-    echo "Error: create_contrive_set.py failed."
-    exit 1
-fi
+# if [ $? -ne 0 ]; then
+#     echo "Error: create_contrive_set.py failed."
+#     exit 1
+# fi
 
-echo "Contrived datasets created successfully."
-echo "Contrived data is located in: $OUTPUT_DIR"
+# echo "Contrived datasets created successfully."
+# echo "Contrived data is located in: $OUTPUT_DIR"
 
-# train model with contrived data. 
+# # train model with contrived data. 
 
 # Train model
 echo "Training baseline model with contrived setting"
