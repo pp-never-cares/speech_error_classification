@@ -89,10 +89,20 @@ echo "Contrived data is located in: $OUTPUT_DIR"
 echo "Training baseline model with contrived setting"
 python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 
+echo "Training baseline model with contrived setting1.0"
+python3 src/training/main.py experiments/baseline_contrive_1.00.cfg
+
+
+echo "Training baseline model with closs_cntrv1.0 setting"
+python3 src/training/main.py experiments/closs_cntrv1.00.cfg
+
 
 #Train model
-echo "Training baseline model with exp-loss-0 setting"
-python3 src/training/main.py experiments/exp_loss_0_binary_crossentropy.cfg
+echo "Training baseline model with closs_cntrv1.00_fweight0 setting"
+python3 src/training/main.py experiments/closs_cntrv1.00_fweight0.0.cfg
+
+echo "Training baseline model with closs_cntrv1.00_uweight0 setting"
+python3 src/training/main.py experiments/closs_cntrv1.00_uweight0.0.cfg
 
 
 
