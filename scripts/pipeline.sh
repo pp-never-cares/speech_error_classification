@@ -24,7 +24,7 @@ FAILURE_LOG_DIR="${LABEL_INFO_DIR}/failure_log.log"
 
 CSV_DIR="data/metadata/"
 OUTPUT_DIR="data/metadata/"
-CONTRIVE_RATIO=0.5
+CONTRIVE_RATIO=1.0
 SEED=42
 
 # # Convert mp3 to wav
@@ -86,6 +86,9 @@ SEED=42
 # # train model with contrived data. 
 
 # Train model
+echo "Training baseline model with baseline setting"
+python3 src/training/main.py experiments/baseline.cfg
+
 echo "Training baseline model with contrived setting"
 python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 

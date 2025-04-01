@@ -6,6 +6,7 @@ Custom frame-level loss function for the model training process.
 
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras import backend as K
 
 
 @tf.keras.utils.register_keras_serializable()
@@ -34,7 +35,8 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
         Returns:
         - loss (tf.Tensor): The computed frame-level loss.
         """
-        small_loss = tf.constant(1e-7, dtype=tf.float32)
+        # small_loss = tf.constant(1e-7, dtype=tf.float32)
+        epsilon = k.epsilon()
 
         # Compute y_true_utt to check if an utterance contains an event or not
         y_true_utt = tf.cast(tf.reduce_any(
@@ -51,7 +53,7 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
         # Compute the loss
         loss = tf.cond(
             tf.equal(tf.size(y_true_masked), 0),
-            lambda: small_loss,
+            lambda: epsilon,
             lambda: tf.reduce_mean(
                 keras.losses.binary_crossentropy(
                     y_true_masked, y_pred_frame_masked)
