@@ -204,11 +204,14 @@ class LabelEncoder:
             print(f"    Processing {feature_file}")
             if feature_file in self.transcripts_dict:
                 start_time, end_time = self.transcripts_dict[feature_file]
+                audio_file_name = os.path.basename(
+                    feature_file).split('_')[0]
                 label_file_name = os.path.basename(feature_file).replace(
                     '.npy', f'_labels.npy')
                 label_file_path = os.path.join(
                     self.label_dir, label_file_name)
                 label_info.append({
+                    "audio_file": audio_file_name,
                     "feature_file": feature_file,
                     "label_file": label_file_path,
                     "start_time": start_time,

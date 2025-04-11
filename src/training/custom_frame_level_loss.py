@@ -36,7 +36,7 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
         - loss (tf.Tensor): The computed frame-level loss.
         """
         # small_loss = tf.constant(1e-7, dtype=tf.float32)
-        epsilon = k.epsilon()
+        epsilon = K.epsilon()
 
         # Compute y_true_utt to check if an utterance contains an event or not
         y_true_utt = tf.cast(tf.reduce_any(

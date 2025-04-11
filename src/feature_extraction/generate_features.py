@@ -186,6 +186,7 @@ class FeatureExtractor():
                 transcript_dir, transcript_file_name)
             if not transcript_file:
                 print(f"Transcript file not found for {input_file}")
+                continue
 
             if not file_exists_with_prefix(feature_dir, output_file_name_prefix):
                 try:
