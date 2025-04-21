@@ -53,9 +53,9 @@ SEED=42
 # fi
 # python3 src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --failure_log_dir $FAILURE_LOG_DIR --n_process $PROCESS_NUM
 
-# # # Split data
-# echo "Splitting data into train, eval, and test sets"
-# python3 src/feature_extraction/split_audio_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+# # Split data
+echo "Splitting data into train, eval, and test sets"
+python3 src/feature_extraction/split_channel_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
 # # Train model
 # echo "Training baseline model with baseline setting"
