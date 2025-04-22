@@ -54,8 +54,12 @@ SEED=42
 # python3 src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --failure_log_dir $FAILURE_LOG_DIR --n_process $PROCESS_NUM
 
 # # Split data
-echo "Splitting data into train, eval, and test sets"
-python3 src/feature_extraction/split_channel_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+echo "Splitting data into train, eval, and test sets according to the auio list"
+python3 src/feature_extraction/split_audio_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
+
+# # Split data
+# echo "Splitting data into train, eval, and test sets according to the autio channel data"
+# python3 src/feature_extraction/split_channel_data.py --label_info_path $LABEL_INFO_PATH --output_dir $OUTPUT_DIR --eval_ratio $EVAL_RATIO --test_ratio $TEST_RATIO
 
 # # Train model
 # echo "Training baseline model with baseline setting"
@@ -63,49 +67,49 @@ python3 src/feature_extraction/split_channel_data.py --label_info_path $LABEL_IN
 
 
 # Create output directory if it doesn't exist
-if [ ! -d "$(dirname "$OUTPUT_DIR")" ]; then
-    mkdir -p "$(dirname "OUTPUT_DIR")"
-fi
+# if [ ! -d "$(dirname "$OUTPUT_DIR")" ]; then
+#     mkdir -p "$(dirname "OUTPUT_DIR")"
+# fi
 
-echo "Creating contrived datasets with balanced event and non-event samples..."
+# echo "Creating contrived datasets with balanced event and non-event samples..."
 
-python src/feature_extraction/create_contrive_set.py \
-    --csv_dir "$CSV_DIR" \
-    --output_dir "$OUTPUT_DIR" \
-    --ratio "$CONTRIVE_RATIO" \
-    --seed "$SEED"
+# python src/feature_extraction/create_contrive_set.py \
+#     --csv_dir "$CSV_DIR" \
+#     --output_dir "$OUTPUT_DIR" \
+#     --ratio "$CONTRIVE_RATIO" \
+#     --seed "$SEED"
 
-if [ $? -ne 0 ]; then
-    echo "Error: create_contrive_set.py failed."
-    exit 1
-fi
+# if [ $? -ne 0 ]; then
+#     echo "Error: create_contrive_set.py failed."
+#     exit 1
+# fi
 
-echo "Contrived datasets created successfully."
-echo "Contrived data is located in: $OUTPUT_DIR"
+# echo "Contrived datasets created successfully."
+# echo "Contrived data is located in: $OUTPUT_DIR"
 
-# train model with contrived data. 
+# # train model with contrived data. 
 
-# Train model
-# echo "Training baseline model with baseline setting"
-# python3 src/training/main.py experiments/baseline.cfg
+# # Train model
+# # echo "Training baseline model with baseline setting"
+# # python3 src/training/main.py experiments/baseline.cfg
 
-echo "Training baseline model with contrived setting"
-python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
+# echo "Training baseline model with contrived setting"
+# python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 
-echo "Training baseline model with contrived setting1.0"
-python3 src/training/main.py experiments/baseline_contrive_1.00.cfg
-
-
-echo "Training baseline model with closs_cntrv1.0 setting"
-python3 src/training/main.py experiments/closs_cntrv1.00.cfg
+# echo "Training baseline model with contrived setting1.0"
+# python3 src/training/main.py experiments/baseline_contrive_1.00.cfg
 
 
-#Train model
-echo "Training baseline model with closs_cntrv1.00_fweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv1.00_fweight0.0.cfg
+# echo "Training baseline model with closs_cntrv1.0 setting"
+# python3 src/training/main.py experiments/closs_cntrv1.00.cfg
 
-echo "Training baseline model with closs_cntrv1.00_uweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv1.00_uweight0.0.cfg
+
+# #Train model
+# echo "Training baseline model with closs_cntrv1.00_fweight0 setting"
+# python3 src/training/main.py experiments/closs_cntrv1.00_fweight0.0.cfg
+
+# echo "Training baseline model with closs_cntrv1.00_uweight0 setting"
+# python3 src/training/main.py experiments/closs_cntrv1.00_uweight0.0.cfg
 
 
 
