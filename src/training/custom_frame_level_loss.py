@@ -9,6 +9,7 @@ from tensorflow import keras
 from tensorflow.keras import backend as K
 
 
+
 @tf.keras.utils.register_keras_serializable()
 class CustomFrameLevelLoss(tf.keras.losses.Loss):
     """
@@ -36,7 +37,7 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
         - loss (tf.Tensor): The computed frame-level loss.
         """
         # small_loss = tf.constant(1e-7, dtype=tf.float32)
-        epsilon = K.epsilon()
+        # epsilon = K.epsilon()
 
         # Compute y_true_utt to check if an utterance contains an event or not
         y_true_utt = tf.cast(tf.reduce_any(
@@ -53,7 +54,7 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
         # Compute the loss
         loss = tf.cond(
             tf.equal(tf.size(y_true_masked), 0),
-            lambda: epsilon,
+            lambda: tf.constant(0.0, dtype=tf.float32),
             lambda: tf.reduce_mean(
                 keras.losses.binary_crossentropy(
                     y_true_masked, y_pred_frame_masked)
