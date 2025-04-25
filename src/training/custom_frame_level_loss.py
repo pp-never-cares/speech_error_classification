@@ -66,9 +66,7 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
             lambda: tf.constant(0.0, dtype=tf.float32),
             lambda: tf.reduce_mean(
                 keras.losses.binary_crossentropy(
-                    y_true_masked, tf.clip_by_value(
-                                                 y_pred_frame_masked,
-                                                 1e-7, 1. - 1e-7))
+                    y_true_masked, y_pred_frame_masked)
             )
         )
         tf.debugging.assert_all_finite(loss, "loss not finite")
