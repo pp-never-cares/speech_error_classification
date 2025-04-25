@@ -53,7 +53,14 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
 
         # Compute the loss
         tf.debugging.assert_all_finite(y_pred_frame_masked, "pred before BC not finite")
-
+        # loss = tf.cond(
+        #     tf.equal(tf.size(y_true_masked), 0),
+        #     lambda: tf.constant(0.0, dtype=tf.float32),
+        #     lambda: tf.reduce_mean(
+        #         keras.losses.binary_crossentropy(
+        #             y_true_masked, y_pred_frame_masked)
+        #     )
+        # )
         loss = tf.cond(
             tf.equal(tf.size(y_true_masked), 0),
             lambda: tf.constant(0.0, dtype=tf.float32),
@@ -65,7 +72,6 @@ class CustomFrameLevelLoss(tf.keras.losses.Loss):
             )
         )
         tf.debugging.assert_all_finite(loss, "loss not finite")
-
         return loss
 
     def get_config(self):
