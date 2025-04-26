@@ -24,7 +24,7 @@ FAILURE_LOG_DIR="${LABEL_INFO_DIR}/failure_log.log"
 
 CSV_DIR="data/metadata/"
 OUTPUT_DIR="data/metadata/"
-CONTRIVE_RATIO=1.0
+CONTRIVE_RATIO=0.5
 SEED=42
 
 # # Convert mp3 to wav
@@ -79,13 +79,13 @@ SEED=42
 #     --ratio "$CONTRIVE_RATIO" \
 #     --seed "$SEED"
 
-# if [ $? -ne 0 ]; then
-#     echo "Error: create_contrive_set.py failed."
-#     exit 1
-# fi
+if [ $? -ne 0 ]; then
+    echo "Error: create_contrive_set.py failed."
+    exit 1
+fi
 
-# echo "Contrived datasets created successfully."
-# echo "Contrived data is located in: $OUTPUT_DIR"
+echo "Contrived datasets created successfully."
+echo "Contrived data is located in: $OUTPUT_DIR"
 
 # train model with contrived data. 
 
@@ -96,20 +96,20 @@ SEED=42
 # echo "Training baseline model with contrived setting"
 # python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 
-echo "Training baseline model with contrived setting1.0"
-python3 src/training/main.py experiments/baseline_contrive_1.00.cfg
+echo "Training baseline model with contrived setting0.50"
+python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 
 
-echo "Training baseline model with closs_cntrv1.0 setting"
-python3 src/training/main.py experiments/closs_cntrv1.00.cfg
+echo "Training baseline model with closs_cntrv0.50 setting"
+python3 src/training/main.py experiments/closs_cntrv0.50.cfg
 
 
 #Train model
-echo "Training baseline model with closs_cntrv1.00_fweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv1.00_fweight0.0.cfg
+echo "Training baseline model with closs_cntrv0.50_fweight0 setting"
+python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.0.cfg
 
-echo "Training baseline model with closs_cntrv1.00_uweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv1.00_uweight0.0.cfg
+echo "Training baseline model with closs_cntrv0.50_uweight0 setting"
+python3 src/training/main.py experiments/closs_cntrv0.50_uweight0.0.cfg
 
 
 
