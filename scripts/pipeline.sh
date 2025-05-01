@@ -96,28 +96,28 @@ echo "Contrived data is located in: $OUTPUT_DIR"
 # echo "Training baseline model with contrived setting"
 # python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 
-echo "Training baseline model with contrived setting0.50"
-python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
+# echo "Training baseline model with contrived setting0.50"
+# python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 
 
-echo "Training baseline model with closs_cntrv0.50 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50.cfg
+# echo "Training baseline model with closs_cntrv0.50 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50.cfg
 
-#Train model
-echo "Training baseline model with closs_cntrv0.50_fweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.0.cfg
+# #Train model
+# echo "Training baseline model with closs_cntrv0.50_fweight0 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.0.cfg
 
-echo "Training baseline model with closs_cntrv0.50_fweight0.25 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.25.cfg
+# echo "Training baseline model with closs_cntrv0.50_fweight0.25 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.25.cfg
 
-echo "Training baseline model with closs_cntrv0.50_fweight0.50 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.50.cfg
+# echo "Training baseline model with closs_cntrv0.50_fweight0.50 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.50.cfg
 
-echo "Training baseline model with closs_cntrv0.50_fweight0.75 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.75.cfg
+# echo "Training baseline model with closs_cntrv0.50_fweight0.75 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.75.cfg
 
-echo "Training baseline model with closs_cntrv0.50_uweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_uweight0.0.cfg
+# echo "Training baseline model with closs_cntrv0.50_uweight0 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_uweight0.0.cfg
 
 
 
