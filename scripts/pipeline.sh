@@ -42,16 +42,16 @@ SEED=42
 # fi
 # python3 src/feature_extraction/generate_features.py --wav_list $WAVE_LIST --wav_dir $WAVE_DIR --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --feature_config $FEATURE_CONFIG --n_process $PROCESS_NUM
 
-# # Generate labels
-# echo "Generating labels"
-# if [ ! -d $LABEL_DIR ]; then
-#     mkdir -p $LABEL_DIR
-# fi
-# if [ ! -f $FAILURE_LOG_DIR ]; then
-#     touch $FAILURE_LOG_DIR
-#     echo "Created empty log file at $FAILURE_LOG_DIR."
-# fi
-# python3 src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --failure_log_dir $FAILURE_LOG_DIR --n_process $PROCESS_NUM
+# Generate labels
+echo "Generating labels"
+if [ ! -d $LABEL_DIR ]; then
+    mkdir -p $LABEL_DIR
+fi
+if [ ! -f $FAILURE_LOG_DIR ]; then
+    touch $FAILURE_LOG_DIR
+    echo "Created empty log file at $FAILURE_LOG_DIR."
+fi
+python3 src/feature_extraction/generate_labels.py --annotations_path $ANNOTATIONS_PATH --transcript_dir $TRANSCRIPT_DIR --feature_dir $FEATURE_DIR --label_dir $LABEL_DIR --label_info_dir $LABEL_INFO_DIR --feature_config $FEATURE_CONFIG --failure_log_dir $FAILURE_LOG_DIR --n_process $PROCESS_NUM
 
 # # Split data
 echo "Splitting data into train, eval, and test sets according to the auio list"
