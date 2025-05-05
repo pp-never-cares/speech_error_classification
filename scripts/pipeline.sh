@@ -71,21 +71,21 @@ SEED=42
 #     mkdir -p "$(dirname "OUTPUT_DIR")"
 # fi
 
-# echo "Creating contrived datasets with balanced event and non-event samples..."
+echo "Creating contrived datasets with balanced event and non-event samples..."
 
-# python src/feature_extraction/create_contrive_set.py \
-#     --csv_dir "$CSV_DIR" \
-#     --output_dir "$OUTPUT_DIR" \
-#     --ratio "$CONTRIVE_RATIO" \
-#     --seed "$SEED"
+python src/feature_extraction/create_contrive_set.py \
+    --csv_dir "$CSV_DIR" \
+    --output_dir "$OUTPUT_DIR" \
+    --ratio "$CONTRIVE_RATIO" \
+    --seed "$SEED"
 
-# if [ $? -ne 0 ]; then
-#     echo "Error: create_contrive_set.py failed."
-#     exit 1
-# fi
+if [ $? -ne 0 ]; then
+    echo "Error: create_contrive_set.py failed."
+    exit 1
+fi
 
-# echo "Contrived datasets created successfully."
-# echo "Contrived data is located in: $OUTPUT_DIR"
+echo "Contrived datasets created successfully."
+echo "Contrived data is located in: $OUTPUT_DIR"
 
 # train model with contrived data. 
 
@@ -93,29 +93,29 @@ SEED=42
 # echo "Training baseline model with baseline setting"
 # python3 src/training/main.py experiments/baseline.cfg
 
-echo "Training baseline model with contrived setting"
-python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
+# echo "Training baseline model with contrived setting"
+# python3 src/training/main.py experiments/baseline_contrive_0.50.cfg
 
-echo "Training baseline model with closs_cntrv0.50 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50.cfg
+# echo "Training baseline model with closs_cntrv0.50 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50.cfg
 
-#Train model
-echo "Training baseline model with closs_cntrv0.50_fweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.0.cfg
+# #Train model
+# echo "Training baseline model with closs_cntrv0.50_fweight0 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.0.cfg
 
-echo "Training baseline model with closs_cntrv0.50_fweight0.25 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.25.cfg
+# echo "Training baseline model with closs_cntrv0.50_fweight0.25 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.25.cfg
 
-echo "Training baseline model with closs_cntrv0.50_fweight0.50 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.50.cfg
+# echo "Training baseline model with closs_cntrv0.50_fweight0.50 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.50.cfg
 
-echo "Training baseline model with closs_cntrv0.50_fweight0.75 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.75.cfg
+# echo "Training baseline model with closs_cntrv0.50_fweight0.75 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_fweight0.75.cfg
 
-echo "Training baseline model with closs_cntrv0.50_uweight0 setting"
-python3 src/training/main.py experiments/closs_cntrv0.50_uweight0.0.cfg
+# echo "Training baseline model with closs_cntrv0.50_uweight0 setting"
+# python3 src/training/main.py experiments/closs_cntrv0.50_uweight0.0.cfg
 
-echo "Training done."
+# echo "Training done."
 
 
 
