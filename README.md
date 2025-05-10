@@ -197,3 +197,99 @@ Source code organized into subfolders:
 - **README.md**: Project documentation (this file).
 - **requirements.txt**: List of required Python libraries.
 - **sbatch_sfused.sh**: Script to run the model on the Northeastern Discovery cluster using GPU nodes.
+
+
+## Run it with Annoconda 
+
+## Running the Project with Anaconda
+
+This guide explains how to set up and run the Speech Error Detection project in a local environment using [Anaconda](https://www.anaconda.com/).
+
+#### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/pp-never-cares/speech_error_classification
+cd speech_error_classification
+```
+
+#### Step 2: Create and Activate the Conda Environment
+
+If an `environment.yml` file is available, run:
+
+```bash
+conda env create -f environment.yml
+conda activate speech_error_classification
+```
+
+If not, create the environment manually:
+
+```bash
+conda create -n speech_error_classification python=3.10
+conda activate speech-error-ml
+```
+
+Then install the dependencies:
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Required packages include:
+
+* numpy < 2
+* librosa
+* soxr
+* scipy
+* soundfile
+* audioread
+* pandas
+* tensorflow
+* keras
+
+#### Step 3: Prepare the Data
+
+Ensure your data is organized as follows:
+
+* Audio files: `data/audio/*.wav`
+* Metadata CSV: `data/metadata/*.csv`
+* WhisperX transcripts: `data/whisperX/*.csv`
+
+Each metadata CSV should contain:
+
+* `file`, `label`, `start`, `end`
+
+Each transcript CSV should contain:
+
+* `start`, `end`, `text`
+
+#### Step 4: Run Preprocessing Scripts
+
+```bash
+bash scripts/process_audio_files.sh
+bash scripts/generate_features.sh
+bash scripts/split_data.sh
+```
+If you want everythin to be done in one step, run 
+```bash
+bash scripts/pipeline.sh
+```
+
+
+#### Step 5: Train the Model
+
+```bash
+python src/training/main.py experiments/baseline_contrive_0.50.cfg
+```
+
+#### Step 6: Evaluate the Model
+
+```bash
+bash scripts/evaluate_utterance.sh models/YOUR_MODEL_FILE.keras data/audio/YOUR_AUDIO_FILE.wav
+```
+
+#### Step 7: Visualize Logs
+
+```bash
+python src/evaluation/read_tensorboard.py logs/YOUR_LOG_DIR/
+```
