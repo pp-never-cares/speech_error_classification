@@ -225,7 +225,7 @@ If not, create the environment manually:
 
 ```bash
 conda create -n speech_error_classification python=3.10
-conda activate speech-error-ml
+conda activate speech_error_classification
 ```
 
 Then install the dependencies:
