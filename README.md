@@ -218,14 +218,14 @@ If an `environment.yml` file is available, run:
 
 ```bash
 conda env create -f environment.yml
-conda activate speech_error_classification
+conda activate speech-error
 ```
 
 If not, create the environment manually:
 
 ```bash
-conda create -n speech_error_classification python=3.10
-conda activate speech_error_classification
+conda create -n speech-error python=3.10
+conda activate speech-error
 ```
 
 Then install the dependencies:
