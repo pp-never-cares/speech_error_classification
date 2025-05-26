@@ -87,7 +87,8 @@ def split_data(label_info_path: str,
     events_to_consider = [
         "Phonological Addition",
         "Phonological Deletion",
-        "Phonological Substitution"
+        "Phonological Substitution",
+        "Lexical Substitution"
     ]
 
     # Prepare containers for final splits

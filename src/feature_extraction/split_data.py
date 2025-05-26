@@ -41,8 +41,8 @@ def split_data(label_info_path: str, output_dir: str, eval_ratio: float = 0.1, t
     # Get the list of samples with events
     # Only consider these events: ['Phonological Addition', 'Phonological Deletion', 'Phonological Substitution']
     events_to_consider = ['Phonological Addition',
-                          'Phonological Deletion', 'Phonological Substitution']
-    label_index = headers.index('label_list')
+                          'Phonological Deletion', 'Phonological Substitution', 'Lexical Substitution']
+    label_index = headers.index('label_list', )
     samples_with_events = [row for row in label_info if any(
         event in row[label_index] for event in events_to_consider)]
     samples_without_events = [row for row in label_info if all(
